@@ -1,0 +1,8 @@
+.guest-screen {
+  text-align: center;
+  height: 100vh;
+}
+.content {
+  background-color: white;
+  height: calc(100vh - 72px);
+}
