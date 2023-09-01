@@ -1,6 +1,0 @@
-.session-grid {
-  height: calc(100vh - 80px);
-  overflow-y: scroll;
-  background-color: white;
-  padding-left: 10px;
-}
