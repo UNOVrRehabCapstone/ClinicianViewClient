@@ -7,8 +7,8 @@ import { useSocketContext } from './SocketContext';
 import { IUser } from '../interfaces/User';
 import { IPatientInfo } from '../interfaces/PatientInfo';
 
-const SERVER_IP = 'http://52.11.199.188:5000';
-// const SERVER_IP = 'http://localhost:5000';
+//const SERVER_IP = 'http://52.11.199.188:5000';
+ const SERVER_IP = 'http://localhost:5000';
 
 export interface IAxiosContext {
   login: (username: string, password: string) => Promise<any>;
