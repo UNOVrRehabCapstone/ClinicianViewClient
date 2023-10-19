@@ -7,8 +7,8 @@ import { useSocketContext } from './SocketContext';
 import { IUser } from '../interfaces/User';
 import { IPatientInfo } from '../interfaces/PatientInfo';
 
-//const SERVER_IP = 'http://52.11.199.188:5000';
- const SERVER_IP = 'http://localhost:5000';
+const SERVER_IP = 'http://137.48.186.67:5000';
+ //const SERVER_IP = 'http://localhost:5000';
 
 export interface IAxiosContext {
   login: (username: string, password: string) => Promise<any>;
@@ -69,7 +69,9 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
     return null;
   };
 
+  //REMOVED HASHING OF PASSWORD FOR TESTING REVERT THIS CHANGE 
   const login = async (username: string, password: string) => {
+    console.log("Logging in.")
     const res = await axios.post(`${SERVER_IP}/login`, {
       username,
       shaPassword: sha256(password),
@@ -147,6 +149,7 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
   };
 
   const joinSession = async (sessionKey: string, clinicianName: string) => {
+    console.log(sessionKey);
     const token = window.localStorage.getItem('token');
     try {
       const res = await axios.post(
