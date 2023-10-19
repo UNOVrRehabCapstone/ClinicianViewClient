@@ -132,6 +132,11 @@ session. On join session, server adds both clients to a socket.io room
 Handles current logged in user
 ```
 
+# Release Notes:
+
+### 10/19/2023
+* Connected to new student server
+
 #
 
 ## Maintainers
