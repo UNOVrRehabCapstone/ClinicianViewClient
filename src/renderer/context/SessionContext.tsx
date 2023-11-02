@@ -24,7 +24,11 @@ export interface ISessionContext {
   clientListLoading: boolean;
   getPatientsInSession: (sessionKey: string) => Promise<any>;
   patientList: IPatient[];
-  startGame: (sessionKey: string, game: string, patientId?: string) => void;
+  startGame: (sessionKey: string, patientId?: string) => void;
+  selectGame: (game:string) => void;
+  setCurrentBalloonGameMode: (mode: string) => void;
+  setCurrentBalloonTargetAmount: (balloonAmount: string) => void;
+  setCurrentPowerupFrequency: (freq: string) => void;
   deletePatientFromSession: (patientIn: string) => void;
   getCurrentGame: () => string;
   getPatientPositionalData: (
@@ -53,6 +57,9 @@ export const SessionProvider = (props: { children: ReactElement }) => {
 
   const [patientList, setPatientList] = useState<IPatient[]>([]);
   const [currentGame, setCurrentGame] = useState('0');
+  const [currentBalloonGameMode, setCurrentBalloonGameMode] = useState('Relaxed');
+  const [currentBalloonTarget, setCurrentBalloonTarget] = useState('10');
+  const [currentBalloonPowerupFreq, setCurrentPowerupFreq] = useState('Medium');
 
   const auth = useUserContext();
   const axiosContext = useAxiosContext();
@@ -213,9 +220,16 @@ export const SessionProvider = (props: { children: ReactElement }) => {
       .catch((err: any) => message.error(err));
   };
 
-  const startGame = (sessionKey: string, game: string, patientId?: string) => {
-    setCurrentGame(game);
-    console.log(sessionKey, game, patientId, window.location.href);
+  const startGame = (sessionKey: string, patientId?: string) => {
+    const game = getCurrentGame();
+    const mode = getCurrentBalloonGameMode();
+    const target = getCurrentBalloonTarget();
+    const freq = getCurrentBalloonPowerupFreq();
+
+    //If the game is the balloon game, update balloon settings
+    if(game == "2"){
+      axiosContext.updateBalloonSettings(sessionKey, mode,target,freq)
+    }
     axiosContext
       .startGame(sessionKey, game, auth.currentUser?.username, patientId)
       .then((res: any) => {
@@ -224,9 +238,32 @@ export const SessionProvider = (props: { children: ReactElement }) => {
       .catch((err: any) => message.error(err));
   };
 
+  const selectGame =(game: string) => {
+    setCurrentGame(game);
+  };
+
   const getCurrentGame = () => {
     return currentGame;
   };
+  const getCurrentBalloonGameMode = () => {
+    return currentBalloonGameMode;
+  }
+  const getCurrentBalloonTarget = () =>{
+    return currentBalloonTarget;
+  }
+  const getCurrentBalloonPowerupFreq = () =>{
+    return currentBalloonPowerupFreq;
+  }
+  
+  const setCurrentGameMode = (mode: string) =>{
+    setCurrentBalloonGameMode(mode);
+  }
+  const setCurrentBalloonTargetAmount = (balloonAmount: string) =>{
+    setCurrentBalloonTarget(balloonAmount);
+  }
+  const setCurrentPowerupFrequency = (freq: string) =>{
+    setCurrentPowerupFreq(freq);
+  }
 
   const getPatientPositionalData = (
     patientName: string,
@@ -281,11 +318,16 @@ export const SessionProvider = (props: { children: ReactElement }) => {
         getPatientsInSession,
         patientList,
         startGame,
+        selectGame,
         deletePatientFromSession,
         getCurrentGame,
         getPatientPositionalData,
         updatePatientInfo,
         getPatient,
+        setCurrentBalloonTargetAmount,
+        setCurrentBalloonGameMode,
+        setCurrentPowerupFrequency
+
       }}
     >
       {children}

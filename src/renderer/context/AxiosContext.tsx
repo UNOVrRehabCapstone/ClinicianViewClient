@@ -7,8 +7,8 @@ import { useSocketContext } from './SocketContext';
 import { IUser } from '../interfaces/User';
 import { IPatientInfo } from '../interfaces/PatientInfo';
 
-const SERVER_IP = 'http://137.48.186.67:5000';
- //const SERVER_IP = 'http://localhost:5000';
+//const SERVER_IP = 'http://137.48.186.67:5000';
+ const SERVER_IP = 'http://localhost:5000';
 
 export interface IAxiosContext {
   login: (username: string, password: string) => Promise<any>;
@@ -35,6 +35,12 @@ export interface IAxiosContext {
     clinician: string,
     patientSocketId: string
   ) => Promise<number | null>;
+  updateBalloonSettings:(
+    sessionKey: string,
+    mode: string,
+    target: string,
+    freq: string
+  ) => Promise<any>;
   deleteSession: (sessionKey: string) => Promise<number | null>;
   removePatientFromSession: (
     patientId: string,
@@ -149,7 +155,6 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
   };
 
   const joinSession = async (sessionKey: string, clinicianName: string) => {
-    console.log(sessionKey);
     const token = window.localStorage.getItem('token');
     try {
       const res = await axios.post(
@@ -258,6 +263,8 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
     }
   };
 
+  //New addition - apply settings when starting the game.
+  //Should be moved to a separate method. 
   const startGame = async (
     sessionKey: string,
     game: string,
@@ -279,6 +286,28 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
       return unauthorized();
     }
   };
+  const updateBalloonSettings = async(
+    sessionKey: string,
+    mode: string,
+    target: string,
+    freq: string
+  ) =>{
+    const token = window.localStorage.getItem('token');
+    try{
+      const res2 = await axios.post(
+        `${SERVER_IP}/updateBalloonSettings`,
+        {sessionKey, mode, target, freq},
+        {
+          headers: { Authorization: `${token}` },
+        }
+      );
+      return res2.status;
+    } catch( error: any){
+      message.error(error);
+      return unauthorized();
+    }
+
+  }
 
   const getPatientPositionalData = async (
     patientName: string,
@@ -373,6 +402,7 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
       value={{
         getPatientsInSession,
         startGame,
+        updateBalloonSettings,
         login,
         fetchSessions,
         createSession,
