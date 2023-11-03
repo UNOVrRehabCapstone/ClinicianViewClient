@@ -137,6 +137,9 @@ Handles current logged in user
 ### 10/19/2023
 * Connected to new student server
 
+* ### 11/02/2023
+* Added clinician controls for the new balloon game settings
+
 #
 
 ## Maintainers
