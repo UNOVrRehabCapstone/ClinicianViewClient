@@ -137,8 +137,24 @@ Handles current logged in user
 ### 10/19/2023
 * Connected to new student server
 
-* ### 11/02/2023
+### 11/02/2023
 * Added clinician controls for the new balloon game settings
+
+### 11/16/2023
+Clinician Side:
+* Implemented Settings:
+* Game selection
+* Game mode selection (relaxed, normal)
+* Target goal selection (left hand, right hand, or both)
+* Powerup frequencies
+* Toggle on/off the automatic spawner
+* Manual spawning of a balloon
+* Spawn Pattern choice (Alternating, Concurrent, Random)
+* Added a slider for the "Random" spawn pattern so the clinician can control the spawn probability
+* Speed of balloons
+* Positioning
+* Dart spawns
+* Balloon spawns
 
 #
 
