@@ -25,12 +25,17 @@ export interface ISessionContext {
   getPatientsInSession: (sessionKey: string) => Promise<any>;
   patientList: IPatient[];
   startGame: (sessionKey: string, patientId?: string) => void;
-  selectGame: (game:string) => void;
-  setCurrentBalloonGameMode: (mode: string) => void;
-  setCurrentBalloonTargetAmount: (balloonAmount: string) => void;
-  setCurrentPowerupFrequency: (freq: string) => void;
-  deletePatientFromSession: (patientIn: string) => void;
   getCurrentGame: () => string;
+  setCurrentGame: (game: string) => void;
+  setCurrentBalloonGameMode: (mode: string) => void;
+  setCurrentBalloonTarget: (target: string) => void;
+  setCurrentPowerupFreq: (freq: string) => void;
+  setCurrentLeftRightRatio: (ratio: string) => void;
+  setCurrentSpawnPattern: (pattern: string) => void;
+  setCurrentMaxLives: (lives: string) => void;
+  setCurrentValidHand: (hand: string) => void;
+  manuallySpawnBalloon: (patientId?: string) => void;
+  deletePatientFromSession: (patientIn: string) => void;
   getPatientPositionalData: (
     patientName: string,
     patientSocketId: string
@@ -59,8 +64,11 @@ export const SessionProvider = (props: { children: ReactElement }) => {
   const [currentGame, setCurrentGame] = useState('0');
   const [currentBalloonGameMode, setCurrentBalloonGameMode] = useState('Relaxed');
   const [currentBalloonTarget, setCurrentBalloonTarget] = useState('10');
-  const [currentBalloonPowerupFreq, setCurrentPowerupFreq] = useState('Medium');
-
+  const [currentBalloonPowerupFreq, setCurrentPowerupFreq] = useState('None');
+  const [currentLeftRightRatio, setCurrentLeftRightRatio] = useState('0.5');
+  const [currentSpawnPattern, setCurrentSpawnPattern] = useState('0');
+  const [currentMaxLives, setCurrentMaxLives] = useState('5');
+  const [currentValidHand, setCurrentValidHand] = useState('2');
   const auth = useUserContext();
   const axiosContext = useAxiosContext();
   const socket = useSocketContext();
@@ -221,49 +229,32 @@ export const SessionProvider = (props: { children: ReactElement }) => {
   };
 
   const startGame = (sessionKey: string, patientId?: string) => {
-    const game = getCurrentGame();
-    const mode = getCurrentBalloonGameMode();
-    const target = getCurrentBalloonTarget();
-    const freq = getCurrentBalloonPowerupFreq();
-
     //If the game is the balloon game, update balloon settings
-    if(game == "2"){
-      axiosContext.updateBalloonSettings(sessionKey, mode,target,freq)
+    if(currentGame == "2"){
+      axiosContext.updateBalloonSettings(sessionKey, currentBalloonGameMode,currentBalloonTarget
+        ,currentBalloonPowerupFreq, currentLeftRightRatio, currentSpawnPattern, currentMaxLives, currentValidHand)
     }
     axiosContext
-      .startGame(sessionKey, game, auth.currentUser?.username, patientId)
+      .startGame(sessionKey, currentGame, auth.currentUser?.username, patientId)
       .then((res: any) => {
         return res;
       })
       .catch((err: any) => message.error(err));
   };
 
-  const selectGame =(game: string) => {
-    setCurrentGame(game);
-  };
 
+  const manuallySpawnBalloon = (patientId?: string) => {
+    axiosContext
+      .manuallySpawnBalloon(currentSession?.sessionKey)
+      .then((res: any) => {
+        return res;
+      })
+      .catch((err: any) => message.error(err));
+  };
   const getCurrentGame = () => {
     return currentGame;
-  };
-  const getCurrentBalloonGameMode = () => {
-    return currentBalloonGameMode;
   }
-  const getCurrentBalloonTarget = () =>{
-    return currentBalloonTarget;
-  }
-  const getCurrentBalloonPowerupFreq = () =>{
-    return currentBalloonPowerupFreq;
-  }
-  
-  const setCurrentGameMode = (mode: string) =>{
-    setCurrentBalloonGameMode(mode);
-  }
-  const setCurrentBalloonTargetAmount = (balloonAmount: string) =>{
-    setCurrentBalloonTarget(balloonAmount);
-  }
-  const setCurrentPowerupFrequency = (freq: string) =>{
-    setCurrentPowerupFreq(freq);
-  }
+
 
   const getPatientPositionalData = (
     patientName: string,
@@ -318,16 +309,20 @@ export const SessionProvider = (props: { children: ReactElement }) => {
         getPatientsInSession,
         patientList,
         startGame,
-        selectGame,
         deletePatientFromSession,
-        getCurrentGame,
         getPatientPositionalData,
         updatePatientInfo,
         getPatient,
-        setCurrentBalloonTargetAmount,
         setCurrentBalloonGameMode,
-        setCurrentPowerupFrequency
-
+        setCurrentPowerupFreq,
+        setCurrentBalloonTarget,
+        setCurrentLeftRightRatio,
+        setCurrentGame,
+        setCurrentSpawnPattern,
+        setCurrentMaxLives,
+        setCurrentValidHand,
+        getCurrentGame,
+        manuallySpawnBalloon
       }}
     >
       {children}

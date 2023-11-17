@@ -39,8 +39,13 @@ export interface IAxiosContext {
     sessionKey: string,
     mode: string,
     target: string,
-    freq: string
+    freq: string,
+    ratio: string,
+    pattern: string,
+    lives: string,
+    hand: string,
   ) => Promise<any>;
+  manuallySpawnBalloon: (sessionKey: string) => Promise<any>;
   deleteSession: (sessionKey: string) => Promise<number | null>;
   removePatientFromSession: (
     patientId: string,
@@ -290,13 +295,18 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
     sessionKey: string,
     mode: string,
     target: string,
-    freq: string
+    freq: string,
+    ratio: string,
+    pattern: string,
+    lives: string,
+    hand: string,
+
   ) =>{
     const token = window.localStorage.getItem('token');
     try{
       const res2 = await axios.post(
         `${SERVER_IP}/updateBalloonSettings`,
-        {sessionKey, mode, target, freq},
+        {sessionKey, mode, target, freq, pattern, ratio, lives, hand},
         {
           headers: { Authorization: `${token}` },
         }
@@ -307,6 +317,25 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
       return unauthorized();
     }
 
+  }
+  
+  const manuallySpawnBalloon = async(
+    sessionKey: string
+  ) => {
+    const token = window.localStorage.getItem('token');
+    try{
+      const res2 = await axios.post(
+        `${SERVER_IP}/manuallySpawnBalloon`,
+        {sessionKey},
+        {
+          headers: { Authorization: `${token}` },
+        }
+      );
+      return res2.status;
+    } catch( error: any){
+      message.error(error);
+      return unauthorized();
+    }
   }
 
   const getPatientPositionalData = async (
@@ -419,6 +448,7 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
         updatePatientInfo,
         savePatientRepData,
         getPatient,
+        manuallySpawnBalloon
       }}
     >
       {children}
