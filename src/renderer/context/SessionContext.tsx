@@ -5,7 +5,7 @@ import { IPatient, ISession } from '../interfaces/Session';
 import { useUserContext } from './UserContext';
 import { useAxiosContext } from './AxiosContext';
 import { useSocketContext } from './SocketContext';
-import { IPatientInfo } from '../interfaces/PatientInfo';
+import { BalloonProgress, IPatientInfo } from '../interfaces/PatientInfo';
 
 export interface ISessionContext {
   sessionList: ISession[];
@@ -24,6 +24,7 @@ export interface ISessionContext {
   clientListLoading: boolean;
   getPatientsInSession: (sessionKey: string) => Promise<any>;
   patientList: IPatient[];
+  balloonInfo: BalloonProgress;
   startGame: (sessionKey: string, patientId?: string) => void;
   getCurrentGame: () => string;
   setCurrentGame: (game: string) => void;
@@ -35,6 +36,7 @@ export interface ISessionContext {
   setCurrentMaxLives: (lives: string) => void;
   setCurrentValidHand: (hand: string) => void;
   manuallySpawnBalloon: (patientId?: string) => void;
+  loadPatientBalloonGameData: (userName: string) => void;
   deletePatientFromSession: (patientIn: string) => void;
   getPatientPositionalData: (
     patientName: string,
@@ -47,6 +49,15 @@ export interface ISessionContext {
 const SessionContext = React.createContext<ISessionContext>(
   {} as ISessionContext
 );
+let tempBalloonInfo = {
+  achievementProgress: "0000000000",
+  careerProgress: "0",
+  levelOneScore: "0",
+  levelTwoScore: "0",
+  levelThreeScore: "0",
+  levelFourScore: "0",
+  levelFiveScore: "0",
+}
 
 export const SessionProvider = (props: { children: ReactElement }) => {
   const [sessionList, setSessionList] = useState<ISession[]>([]);
@@ -62,13 +73,14 @@ export const SessionProvider = (props: { children: ReactElement }) => {
 
   const [patientList, setPatientList] = useState<IPatient[]>([]);
   const [currentGame, setCurrentGame] = useState('0');
-  const [currentBalloonGameMode, setCurrentBalloonGameMode] = useState('Relaxed');
+  const [currentBalloonGameMode, setCurrentBalloonGameMode] = useState('0');
   const [currentBalloonTarget, setCurrentBalloonTarget] = useState('10');
   const [currentBalloonPowerupFreq, setCurrentPowerupFreq] = useState('None');
   const [currentLeftRightRatio, setCurrentLeftRightRatio] = useState('0.5');
   const [currentSpawnPattern, setCurrentSpawnPattern] = useState('0');
   const [currentMaxLives, setCurrentMaxLives] = useState('5');
   const [currentValidHand, setCurrentValidHand] = useState('2');
+  const [balloonInfo, setBalloonInfo] = useState<BalloonProgress>(tempBalloonInfo);
   const auth = useUserContext();
   const axiosContext = useAxiosContext();
   const socket = useSocketContext();
@@ -280,6 +292,17 @@ export const SessionProvider = (props: { children: ReactElement }) => {
       .catch((err: any) => message.error(err));
   };
 
+  const loadPatientBalloonGameData = async( userName: string) => {
+    let newData: BalloonProgress
+    axiosContext.loadPatientBalloonData(userName).then((res:any) =>{
+      newData = {achievementProgress:  res.data.achievementProgress, careerProgress: res.data.careerProgress, levelOneScore: res.data.levelOneScore,
+      levelTwoScore: res.data.levelTwoScore, levelThreeScore: res.data.levelThreeScore, levelFourScore: res.data.levelFourScore, levelFiveScore: res.data.levelFiveScore}
+      setBalloonInfo(newData);
+      //patientList[0].info.balloonProgress= newData;
+
+    })
+  }
+
   const getPatient = async (patientID: string, patientName: string) => {
     return axiosContext
       .getPatient(patientID, patientName)
@@ -322,7 +345,9 @@ export const SessionProvider = (props: { children: ReactElement }) => {
         setCurrentMaxLives,
         setCurrentValidHand,
         getCurrentGame,
-        manuallySpawnBalloon
+        manuallySpawnBalloon,
+        loadPatientBalloonGameData,
+        balloonInfo
       }}
     >
       {children}

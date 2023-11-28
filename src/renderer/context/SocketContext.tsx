@@ -63,6 +63,7 @@ export const SocketProvider = (props: { children: ReactElement }) => {
       setConnected(true);
       newSocket.emit('join', newSocket.id);
     });
+    newSocket.on('balloonDataClientUpdate', () => {console.log("new updated")})
     newSocket.on('userJoined', () => {});
     newSocket.on('positionalDataClinician', (data: string) => {
       switch (data.split('(')[0]) {

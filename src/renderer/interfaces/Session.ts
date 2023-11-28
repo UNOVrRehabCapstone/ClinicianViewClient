@@ -1,3 +1,4 @@
+import {IPatientInfo} from "./PatientInfo"
 export interface ISession {
   createdByName: string | undefined;
   sessionName: string;

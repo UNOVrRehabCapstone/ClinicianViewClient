@@ -12,6 +12,8 @@ import { ISession } from '../../interfaces/Session';
 import PatientCard from '../../components/PatientCard';
 import { useSessionContext } from '../../context/SessionContext';
 import FormItemLabel from 'antd/es/form/FormItemLabel';
+import { IPatientInfo } from 'renderer/interfaces/PatientInfo';
+import Input from 'antd/lib/input/Input';
 
 const { Option } = Select;
 
@@ -32,6 +34,10 @@ export const SessionScreen: FC<ISessionScreen> = ({
   const [showAddPatientsModal, setShowAddPatientsModal] = useState(false);
   const [showCreatePatientModal, setShowCreatePatientModal] = useState(false);
   const [showBalloonRatioSlider, setshowBalloonRatioSlider] = useState(false);
+  const [showBalloonCareerModeSettings, setShowBalloonCareerModeSettings] = useState(false);
+  const [showBalloonGameMode, setShowBalloonGameMode]= useState(false);
+  const [showPatientNameModal, setShowPatientNameModal] = useState(false);
+  const [patientName, setName] = useState('Patient')
   const [selectedPatientsToAdd, setSelectedPatientsToAdd] = useState<string[]>(
     []
   );
@@ -63,6 +69,23 @@ export const SessionScreen: FC<ISessionScreen> = ({
     sessionContext.removeSession(currentSession.sessionKey);
     history('/dashboard');
   };
+
+  const onPatientNameChange = () => {
+    console.log(patientName);
+    if(sessionContext.patientList[0]){
+      sessionContext.patientList[0].name=patientName
+      sessionContext.loadPatientBalloonGameData(sessionContext.patientList[0].name)
+    }
+    setShowPatientNameModal(false);
+  }
+  const changeName = () => {
+    setShowPatientNameModal(true);
+  }
+  const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
+    setName(e.target.value)
+
+  }
+
 
   return (
     <div className="session-screen">
@@ -139,10 +162,10 @@ export const SessionScreen: FC<ISessionScreen> = ({
                 setShowStartGameButton(true)
               }
               else{
-                setShowStartGameButton(false)
+                setShowStartGameButton(true)
               }
               if(e == "2"){
-                setShowOptions(true)
+                setShowBalloonGameMode(true);
 
               }
               else{
@@ -164,9 +187,11 @@ export const SessionScreen: FC<ISessionScreen> = ({
               style={{ marginRight: 10 }}
               icon={<PlayCircleOutlined/>}
               onClick={() =>{
-                sessionContext.startGame(
-                  sessionContext.currentSession?.sessionKey
-                )
+                //sessionContext.startGame(
+                  //sessionContext.currentSession?.sessionKey
+                //)
+                onPatientNameChange();
+                
               }
               }
           />
@@ -219,41 +244,262 @@ export const SessionScreen: FC<ISessionScreen> = ({
             alignItems: 'center',
             width: "280px"
             }}>
-          {showGameOptions ? (<span>Game Mode: </span>) : (<div></div>)}
-          {showGameOptions ? (
-            <Tooltip title="Manual - Manually spawn balloons Relaxed - Auto spawns, infinite lives
-              Normal - Auto spawns, limited lives" placement="topLeft">
+          {showBalloonGameMode ? (<span>Game Mode: </span>) : (<div></div>)}
+          {showBalloonGameMode ? (
+            <Tooltip title="Career - Progress through 5 levels!    Custom - Create your own custom rules!" placement="topLeft">
               <Select
                 style={{ width: 150, marginRight: 10 }}
                 placeholder="Game Mode"
                 onChange={(e) =>{
-                  if(e =="2"){
-                    setShowBalloonGoal(false)
-                    setShowBalloonSpawner(true)
-                    setShowLives(false)
+                  if(e=="0"){
+                    setShowOptions(false);
+                    setShowBalloonGoal(false);
+                    setShowBalloonSpawner(false);
+                    setShowLives(false);
+                    setShowBalloonCareerModeSettings(true);
+
                   }
                   if(e =="1"){
-                  
+                    setShowOptions(true);
                     setShowBalloonGoal(true)
                     setShowBalloonSpawner(false)
                     setShowLives(true)
-                  }
-                  if(e=="0"){
-                    setShowBalloonGoal(true)
-                    setShowBalloonSpawner(false)
-                    setShowLives(false)
+                    setShowBalloonCareerModeSettings(false);
                   }
                   sessionContext.setCurrentBalloonGameMode(e)
                 }
                 }>
-                <Option value="2">Manual</Option>
-                <Option value="0">Relaxed</Option>
-                <Option value="1">Normal</Option>
+                <Option value="0">Career Mode</Option>
+                <Option value="1">Custom Game</Option>
               </Select>          
             </Tooltip>
           ) : (<div></div>)
           }
         </Col>
+      </Row>
+      <Modal
+      open={showPatientNameModal}
+      onCancel={() => setShowPatientNameModal(false)}
+      onOk={onPatientNameChange}
+      okText="Change Name">
+        <Input placeholder="New Name"
+        value={patientName}
+        onChange={handleInputChange}>
+
+        </Input>
+      </Modal>
+      {showBalloonCareerModeSettings ? (
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+            }}>
+          <span>Patient's Progression Profile: </span>
+          <Button onClick={changeName}>
+          {sessionContext.patientList[0] ? (<span>{sessionContext.patientList[0].name}</span>) : (<div></div>)}        
+          </Button>
+            <Tooltip title="Load a patient's game data" placement="topLeft">
+            </Tooltip>
+        </Col>
+      </Row>) : (<div></div>)}
+      
+      {showBalloonCareerModeSettings ? (
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+            }}>
+          <span>Current Level: </span>
+          <span>{sessionContext.balloonInfo.careerProgress}</span>
+            <Tooltip title="Load a patient's game data" placement="topLeft">
+            </Tooltip>
+        </Col>
+      </Row>) : (<div></div>)}
+            
+      {showBalloonCareerModeSettings ? (
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+            }}>
+          <span>Level One Score: </span>
+          <span>{sessionContext.balloonInfo.levelOneScore} / 3</span>
+            <Tooltip title="Load a patient's game data" placement="topLeft">
+            </Tooltip>
+        </Col>
+      </Row>) : (<div></div>)}
+      {showBalloonCareerModeSettings ? (
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+            }}>
+          <span>Level Two Score: </span>
+          <span>{sessionContext.balloonInfo.levelTwoScore} / 3</span>
+            <Tooltip title="Load a patient's game data" placement="topLeft">
+            </Tooltip>
+        </Col>
+      </Row>) : (<div></div>)}
+      {showBalloonCareerModeSettings ? (
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+            }}>
+          <span>Level Three Score: </span>
+          <span>{sessionContext.balloonInfo.levelThreeScore} / 3</span>
+            <Tooltip title="Load a patient's game data" placement="topLeft">
+            </Tooltip>
+        </Col>
+      </Row>) : (<div></div>)}
+      {showBalloonCareerModeSettings ? (
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+            }}>
+          <span>Level Four Score: </span>
+          <span>{sessionContext.balloonInfo.levelFourScore} / 3</span>
+            <Tooltip title="Load a patient's game data" placement="topLeft">
+            </Tooltip>
+        </Col>
+      </Row>) : (<div></div>)}
+      {showBalloonCareerModeSettings ? (
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+            }}>
+          <span>Level Five Score: </span>
+          <span>{sessionContext.balloonInfo.levelFiveScore} / 3</span>
+            <Tooltip title="Load a patient's game data" placement="topLeft">
+            </Tooltip>
+        </Col>
+      </Row>) : (<div></div>)}
+      {showBalloonCareerModeSettings ? (
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+            }}>
+          <span>Achievement String: </span>
+          <span>{sessionContext.balloonInfo.achievementProgress}</span>
+            <Tooltip title="Load a patient's game data" placement="topLeft">
+            </Tooltip>
+        </Col>
+      </Row>) : (<div></div>)}
+
+
+
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+        }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+          }}>
+          {showGameOptions ? (<span>Balloon Spawning: </span>) : (<div></div>)}
+          {showGameOptions ? (
+            <Tooltip title="Choose if balloons should automatically spawn or not" placement="topLeft">
+              <Select
+                style={{ width: 150, marginRight: 10 }}
+                placeholder="Spawn pattern"
+                onChange={(e) =>{
+                  if(e == "0"){
+                    setShowBalloonSpawner(false)
+                  }
+                  else{
+                    setShowBalloonSpawner(true)
+                  }
+                  sessionContext.setCurrentBalloonGameMode(e)
+                }
+                }>
+                <Option value="1">Automatic</Option>
+                <Option value="2">Manual</Option>
+              </Select>          
+            </Tooltip>
+          ) : (<div></div>)
+          }
+          </Col>
       </Row>
       <Row
         style={{
@@ -320,7 +566,7 @@ export const SessionScreen: FC<ISessionScreen> = ({
             </Col>
         </Row>  
             ) : ( <div></div>)}
-      {showBalloonGoal  ? (
+      {showBalloonGoal && !showBalloonSpawner ?  (
         <Row
           style={{
             display: 'flex',
@@ -374,7 +620,7 @@ export const SessionScreen: FC<ISessionScreen> = ({
         </Row>  
             ) : ( <div></div>)}
 
-      {showLives ? (
+      {showLives && !showBalloonSpawner ? (
         <Row
           style={{
             display: 'flex',
@@ -399,9 +645,10 @@ export const SessionScreen: FC<ISessionScreen> = ({
               }
               }>
               <Option value="1">1</Option>
-              <Option value="2">2</Option>
               <Option value="3">3</Option>
               <Option value="5">5</Option>
+              <Option value="10">10</Option>
+              <Option value="100">Infinite</Option>
             </Select>
           </Tooltip>
           </Col>

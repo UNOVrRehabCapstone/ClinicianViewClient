@@ -9,4 +9,17 @@ export interface IPatientInfo {
   userName: string;
   createdAt: Date;
   patientId: string;
+  balloonProgress: BalloonProgress
+
+  
+}
+
+export interface BalloonProgress{
+  achievementProgress: string;
+  careerProgress: string;
+  levelOneScore:  string;
+  levelTwoScore:  string;
+  levelThreeScore: string;
+  levelFourScore: string;
+  levelFiveScore: string;
 }

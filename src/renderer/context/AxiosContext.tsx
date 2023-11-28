@@ -46,6 +46,7 @@ export interface IAxiosContext {
     hand: string,
   ) => Promise<any>;
   manuallySpawnBalloon: (sessionKey: string) => Promise<any>;
+  loadPatientBalloonData:(userName: string) => Promise<any>;
   deleteSession: (sessionKey: string) => Promise<number | null>;
   removePatientFromSession: (
     patientId: string,
@@ -337,6 +338,19 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
       return unauthorized();
     }
   }
+  const loadPatientBalloonData = async(
+    userName: string
+  ) =>{
+    const token = window.localStorage.getItem('token');
+    try{
+      const res = await axios.post(`${SERVER_IP}/loadPatientBalloonData`,{userName},{headers: {Authorization: `${token}`}})
+      return res
+    }
+    catch( error: any){
+      message.error(error);
+      return unauthorized();
+    }
+  }
 
   const getPatientPositionalData = async (
     patientName: string,
@@ -448,7 +462,8 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
         updatePatientInfo,
         savePatientRepData,
         getPatient,
-        manuallySpawnBalloon
+        manuallySpawnBalloon,
+        loadPatientBalloonData
       }}
     >
       {children}
