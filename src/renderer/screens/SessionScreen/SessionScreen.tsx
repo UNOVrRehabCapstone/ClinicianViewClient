@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import './SessionScreen.css';
-import { Button, Col, List, message, Modal, Row, Select, Tooltip, Slider } from 'antd';
+import { Button, Col, List, message, Modal, Row, Select, Tooltip, Slider, Divider } from 'antd';
 import {
   DeleteOutlined,
   CloseOutlined,
@@ -14,6 +14,7 @@ import { useSessionContext } from '../../context/SessionContext';
 import FormItemLabel from 'antd/es/form/FormItemLabel';
 import { IPatientInfo } from 'renderer/interfaces/PatientInfo';
 import Input from 'antd/lib/input/Input';
+import { BalloonSettings } from 'renderer/components/BalloonGame/BalloonGameSettings';
 
 const { Option } = Select;
 
@@ -26,18 +27,9 @@ export const SessionScreen: FC<ISessionScreen> = ({
 }: ISessionScreen) => {
   const history = useNavigate();
   const sessionContext = useSessionContext();
-  const [showGameOptions, setShowOptions] = useState(false);
   const [showStartGameButton, setShowStartGameButton] = useState(false);
-  const [showBalloonGoal, setShowBalloonGoal]=useState(false);
-  const [showBalloonSpawner, setShowBalloonSpawner]=useState(false);
-  const [showLives, setShowLives]=useState(false);
   const [showAddPatientsModal, setShowAddPatientsModal] = useState(false);
-  const [showCreatePatientModal, setShowCreatePatientModal] = useState(false);
-  const [showBalloonRatioSlider, setshowBalloonRatioSlider] = useState(false);
-  const [showBalloonCareerModeSettings, setShowBalloonCareerModeSettings] = useState(false);
-  const [showBalloonGameMode, setShowBalloonGameMode]= useState(false);
-  const [showPatientNameModal, setShowPatientNameModal] = useState(false);
-  const [patientName, setName] = useState('Patient')
+  const [showBalloonSettings, setShowBalloonSettings] = useState(false);
   const [selectedPatientsToAdd, setSelectedPatientsToAdd] = useState<string[]>(
     []
   );
@@ -70,21 +62,7 @@ export const SessionScreen: FC<ISessionScreen> = ({
     history('/dashboard');
   };
 
-  const onPatientNameChange = () => {
-    console.log(patientName);
-    if(sessionContext.patientList[0]){
-      sessionContext.patientList[0].name=patientName
-      sessionContext.loadPatientBalloonGameData(sessionContext.patientList[0].name)
-    }
-    setShowPatientNameModal(false);
-  }
-  const changeName = () => {
-    setShowPatientNameModal(true);
-  }
-  const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
-    setName(e.target.value)
 
-  }
 
 
   return (
@@ -122,7 +100,9 @@ export const SessionScreen: FC<ISessionScreen> = ({
             })}
         </Select>
       </Modal>
-
+      <Divider orientation='center'  style={{border:'10px'}} >
+          Session Setup
+        </Divider>
       <Row
         style={{
           height: '15%',
@@ -140,7 +120,7 @@ export const SessionScreen: FC<ISessionScreen> = ({
             alignItems: 'center',
           }}
         >
-          <Tooltip title="Leave Session" placement="bottomLeft">
+          <Tooltip color={"rgba(64,168,254,1)"} mouseLeaveDelay={0} title="Leave Session" placement="bottomLeft">
             <Button
               style={{ marginRight: 10 }}
               icon={<CloseOutlined />}
@@ -158,43 +138,41 @@ export const SessionScreen: FC<ISessionScreen> = ({
             defaultValue={"0"}
             onChange={(e) =>{
               sessionContext.setCurrentGame(e)
-              if(e == "2" || e == "0"){
-                setShowStartGameButton(true)
+              if(e == "0" || e == "2"){
+                setShowStartGameButton(true);
               }
               else{
-                setShowStartGameButton(true)
-              }
-              if(e == "2"){
-                setShowBalloonGameMode(true);
-
-              }
-              else{
-                setShowOptions(false)
-                setShowBalloonGoal(false)
+                setShowStartGameButton(false);
               }
             }
             }
           >
             <Option value="0">Initialize</Option>
-            <Option value="1">Box and Blocks</Option>
             <Option value="2">Balloons</Option>
+            <Option value="1">Box and Blocks (Old)</Option>
             {/* FIXME: Add the other games here */}
-            <Option value="3">Planes</Option>
+            <Option value="3">Planes (Old)</Option>
           </Select>
           {showStartGameButton ? (          
-          <Tooltip title="Start Game" placement="bottomLeft">
+          <Tooltip color={"rgba(64,168,254,1)"} mouseLeaveDelay={0} title="Change the currently loaded game for the patient" placement="bottomLeft">
             <Button
               style={{ marginRight: 10 }}
+              type="primary"
               icon={<PlayCircleOutlined/>}
               onClick={() =>{
-                //sessionContext.startGame(
-                  //sessionContext.currentSession?.sessionKey
-                //)
-                onPatientNameChange();
+                if(sessionContext.getCurrentGame() == "2"){
+                  setShowBalloonSettings(true);
+                }
+                else{
+                  setShowBalloonSettings(false);
+                }
+                sessionContext.startGame(
+                  sessionContext.currentSession?.sessionKey
+                )
                 
               }
               }
-          />
+          >Load Game</Button>
           </Tooltip>) : (<div></div>)}
 
 
@@ -210,7 +188,7 @@ export const SessionScreen: FC<ISessionScreen> = ({
             alignItems: 'center',
           }}
         >
-          <Tooltip title="Add Patients" placement="bottom">
+          <Tooltip color={"rgba(64,168,254,1)"} mouseLeaveDelay={0} title="Add Patients" placement="bottom">
             <Button
               style={{ marginLeft: 10 }}
               icon={<UserAddOutlined />}
@@ -220,7 +198,7 @@ export const SessionScreen: FC<ISessionScreen> = ({
               }}
             />
           </Tooltip>
-          <Tooltip title="Close Session" placement="bottom">
+          <Tooltip color={"rgba(64,168,254,1)"} title="Close Session" placement="bottom">
             <Button
               danger
               style={{ marginLeft: 10 }}
@@ -230,496 +208,10 @@ export const SessionScreen: FC<ISessionScreen> = ({
           </Tooltip>
         </Col>
       </Row>
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-          }}>
-        <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-            }}>
-          {showBalloonGameMode ? (<span>Game Mode: </span>) : (<div></div>)}
-          {showBalloonGameMode ? (
-            <Tooltip title="Career - Progress through 5 levels!    Custom - Create your own custom rules!" placement="topLeft">
-              <Select
-                style={{ width: 150, marginRight: 10 }}
-                placeholder="Game Mode"
-                onChange={(e) =>{
-                  if(e=="0"){
-                    setShowOptions(false);
-                    setShowBalloonGoal(false);
-                    setShowBalloonSpawner(false);
-                    setShowLives(false);
-                    setShowBalloonCareerModeSettings(true);
-
-                  }
-                  if(e =="1"){
-                    setShowOptions(true);
-                    setShowBalloonGoal(true)
-                    setShowBalloonSpawner(false)
-                    setShowLives(true)
-                    setShowBalloonCareerModeSettings(false);
-                  }
-                  sessionContext.setCurrentBalloonGameMode(e)
-                }
-                }>
-                <Option value="0">Career Mode</Option>
-                <Option value="1">Custom Game</Option>
-              </Select>          
-            </Tooltip>
-          ) : (<div></div>)
-          }
-        </Col>
-      </Row>
-      <Modal
-      open={showPatientNameModal}
-      onCancel={() => setShowPatientNameModal(false)}
-      onOk={onPatientNameChange}
-      okText="Change Name">
-        <Input placeholder="New Name"
-        value={patientName}
-        onChange={handleInputChange}>
-
-        </Input>
-      </Modal>
-      {showBalloonCareerModeSettings ? (
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-          }}>
-        <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-            }}>
-          <span>Patient's Progression Profile: </span>
-          <Button onClick={changeName}>
-          {sessionContext.patientList[0] ? (<span>{sessionContext.patientList[0].name}</span>) : (<div></div>)}        
-          </Button>
-            <Tooltip title="Load a patient's game data" placement="topLeft">
-            </Tooltip>
-        </Col>
-      </Row>) : (<div></div>)}
-      
-      {showBalloonCareerModeSettings ? (
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-          }}>
-        <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-            }}>
-          <span>Current Level: </span>
-          <span>{sessionContext.balloonInfo.careerProgress}</span>
-            <Tooltip title="Load a patient's game data" placement="topLeft">
-            </Tooltip>
-        </Col>
-      </Row>) : (<div></div>)}
-            
-      {showBalloonCareerModeSettings ? (
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-          }}>
-        <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-            }}>
-          <span>Level One Score: </span>
-          <span>{sessionContext.balloonInfo.levelOneScore} / 3</span>
-            <Tooltip title="Load a patient's game data" placement="topLeft">
-            </Tooltip>
-        </Col>
-      </Row>) : (<div></div>)}
-      {showBalloonCareerModeSettings ? (
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-          }}>
-        <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-            }}>
-          <span>Level Two Score: </span>
-          <span>{sessionContext.balloonInfo.levelTwoScore} / 3</span>
-            <Tooltip title="Load a patient's game data" placement="topLeft">
-            </Tooltip>
-        </Col>
-      </Row>) : (<div></div>)}
-      {showBalloonCareerModeSettings ? (
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-          }}>
-        <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-            }}>
-          <span>Level Three Score: </span>
-          <span>{sessionContext.balloonInfo.levelThreeScore} / 3</span>
-            <Tooltip title="Load a patient's game data" placement="topLeft">
-            </Tooltip>
-        </Col>
-      </Row>) : (<div></div>)}
-      {showBalloonCareerModeSettings ? (
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-          }}>
-        <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-            }}>
-          <span>Level Four Score: </span>
-          <span>{sessionContext.balloonInfo.levelFourScore} / 3</span>
-            <Tooltip title="Load a patient's game data" placement="topLeft">
-            </Tooltip>
-        </Col>
-      </Row>) : (<div></div>)}
-      {showBalloonCareerModeSettings ? (
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-          }}>
-        <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-            }}>
-          <span>Level Five Score: </span>
-          <span>{sessionContext.balloonInfo.levelFiveScore} / 3</span>
-            <Tooltip title="Load a patient's game data" placement="topLeft">
-            </Tooltip>
-        </Col>
-      </Row>) : (<div></div>)}
-      {showBalloonCareerModeSettings ? (
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-          }}>
-        <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-            }}>
-          <span>Achievement String: </span>
-          <span>{sessionContext.balloonInfo.achievementProgress}</span>
-            <Tooltip title="Load a patient's game data" placement="topLeft">
-            </Tooltip>
-        </Col>
-      </Row>) : (<div></div>)}
-
-
-
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-        }}>
-        <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-          }}>
-          {showGameOptions ? (<span>Balloon Spawning: </span>) : (<div></div>)}
-          {showGameOptions ? (
-            <Tooltip title="Choose if balloons should automatically spawn or not" placement="topLeft">
-              <Select
-                style={{ width: 150, marginRight: 10 }}
-                placeholder="Spawn pattern"
-                onChange={(e) =>{
-                  if(e == "0"){
-                    setShowBalloonSpawner(false)
-                  }
-                  else{
-                    setShowBalloonSpawner(true)
-                  }
-                  sessionContext.setCurrentBalloonGameMode(e)
-                }
-                }>
-                <Option value="1">Automatic</Option>
-                <Option value="2">Manual</Option>
-              </Select>          
-            </Tooltip>
-          ) : (<div></div>)
-          }
-          </Col>
-      </Row>
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-        }}>
-        <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-          }}>
-          {showGameOptions ? (<span>Pattern: </span>) : (<div></div>)}
-          {showGameOptions ? (
-            <Tooltip title="Alternating - Spawn left THEN right Concurrent - Spawn left AND right Ratio - Chance based spawning" placement="topLeft">
-              <Select
-                style={{ width: 150, marginRight: 10 }}
-                placeholder="Spawn pattern"
-                onChange={(e) =>{
-                  if(e == "2"){
-                    setshowBalloonRatioSlider(true)
-                  }
-                  else{
-                    setshowBalloonRatioSlider(false)
-                  }
-                  sessionContext.setCurrentSpawnPattern(e)
-
-                }
-                }>
-                <Option value="1">Alternating</Option>
-                <Option value="0">Concurrent</Option>
-                <Option value="2">Ratio</Option>
-              </Select>          
-            </Tooltip>
-          ) : (<div></div>)
-          }
-          </Col>
-      </Row>
-      {showBalloonRatioSlider ? (
-        <Row
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-start',
-            height: '10%'
-            }}>
-            <Col
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                width: "340px"
-              }}>
-                <span> Left / Right spawn ratio </span>
-                  <Slider style={
-                    {width:"220px"}}
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    defaultValue={0.5} 
-                    onChange={(e) =>{sessionContext.setCurrentLeftRightRatio(e.toString())}}></Slider>
-            </Col>
-        </Row>  
-            ) : ( <div></div>)}
-      {showBalloonGoal && !showBalloonSpawner ?  (
-        <Row
-          style={{
-            display: 'flex',
-            padding: '10px',
-            justifyContent: 'flex-start',
-            height: '10%'
-          }}>
-          <Col
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              width: "280px"
-            }}>
-            <span>Point Goal: </span>
-            <Tooltip title="Set how many points need to be scored to win" placement='topLeft'>
-              <Select
-                style={{ width: 150, marginRight: 10 }}
-                placeholder="Balloons to pop"
-                onChange={(e) =>{
-                  sessionContext.setCurrentBalloonTarget(e)
-                }}
-              >
-                <Option value="5">5</Option>
-                <Option value="10">10</Option>
-                <Option value="15">15</Option>
-              </Select>
-            </Tooltip>
-          </Col>
-        </Row>  
-          ) : ( <div></div>)}
-      {showBalloonSpawner ? (
-        <Row
-          style={{
-            display: 'flex',
-            padding: '10px',
-            justifyContent: 'flex-start',
-            height: '10%'
-            }}>
-            <Col
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                width: "280px"
-              }}>
-                <Button type="primary" style={{width: "290px"}} onClick={() =>{sessionContext.manuallySpawnBalloon()}}>
-                  Spawn Balloon
-                </Button>
-            </Col>
-        </Row>  
-            ) : ( <div></div>)}
-
-      {showLives && !showBalloonSpawner ? (
-        <Row
-          style={{
-            display: 'flex',
-            padding: '10px',
-            justifyContent: 'flex-start',
-            height: '10%'
-          }}>
-          <Col
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              width: "280px"
-            }}>
-              <span>Lives:</span>
-          <Tooltip title="How many balloons can the player miss before losing" placement='topLeft'>
-            <Select
-              style={{ width: 150, marginRight: 10 }}
-              placeholder="Lives"
-              onChange={(e) =>{
-                sessionContext.setCurrentMaxLives(e);
-              }
-              }>
-              <Option value="1">1</Option>
-              <Option value="3">3</Option>
-              <Option value="5">5</Option>
-              <Option value="10">10</Option>
-              <Option value="100">Infinite</Option>
-            </Select>
-          </Tooltip>
-          </Col>
-        </Row>  
-            ) : ( <div></div>)}
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-        }}>
-          <Col style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-          }}>
-          {showGameOptions && !showBalloonSpawner ? (<span>Special Frequency: </span>) : (<div></div>)}
-          {showGameOptions && !showBalloonSpawner ? (
-            <Tooltip title="How many special balloons to spawn" placement='topLeft'>
-              <Select
-                style={{ width: 150, marginRight: 10 }}
-                placeholder="Special Balloon Frequency"
-                onChange={(e) =>{
-                  sessionContext.setCurrentPowerupFreq(e);
-                }
-                }>
-                <Option value="None">None</Option>
-                <Option value="Low">Low</Option>
-                <Option value="Medium">Medium</Option>
-                <Option value="High">High</Option>
-              </Select>
-            </Tooltip>
-          ) : (<div></div>)
-          }
-          </Col>
-      </Row>
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-        }}>
-        <Col style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          width: "280px"
-        }}>
-          {showGameOptions && !showBalloonSpawner ? (<span>Hand:</span>) : (<div></div>)}
-          {showGameOptions && !showBalloonSpawner ? (
-          <Tooltip title="Select which hand(s) are able to score points" placement="topLeft">
-            <Select
-              style={{ width: 150, marginRight: 10 }}
-              placeholder="Hand"
-              onChange={(e) =>{
-                sessionContext.setCurrentValidHand(e);
-              }
-              }>
-            <Option value="0">Left</Option>
-            <Option value="1">Right</Option>
-            <Option value="2">Both</Option>
-            </Select>
-          </Tooltip>
-          ) : (<div></div>)
-          }    
-        </Col>
-      </Row>
-      <Row style={{ height: '60%' }}>
+      <Row>
+      <Divider orientation='center'  style={{border:'10px'}} >
+          Patient Information
+        </Divider>
         <List
           className="client-grid"
           itemLayout="horizontal"
@@ -732,7 +224,18 @@ export const SessionScreen: FC<ISessionScreen> = ({
             />
           )}
         />
+              
       </Row>
+
+
+      {showBalloonSettings ? (<div>
+        <Divider orientation='center' style={{border:'10px'}} >
+          Balloon Game
+        </Divider>
+        <BalloonSettings/>
+        </div>) : (<div></div>)}
+
+
     </div>
   );
 };

@@ -192,7 +192,7 @@ export const PatientCard: FC<IPatientCard> = ({
       >
         <Col style={{}}>
           {patient.name}
-          <Tooltip title="Enter Patient" placement="top">
+          <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Enter Patient" placement="top">
             <Button
               style={{ margin: '0 2rem' }}
               icon={<EnterOutlined />}
@@ -214,14 +214,14 @@ export const PatientCard: FC<IPatientCard> = ({
         ) : (
           <>
             <Col style={{}}>
-              <Tooltip title="Update Position" placement="top">
+              <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Update Position" placement="top">
                 <Button
                   style={{ marginRight: 10 }}
                   icon={<DragOutlined />}
                   onClick={() => setShowPositionalModal(true)}
                 />
               </Tooltip>
-              <Tooltip title="Pause Game" placement="top">
+              <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Pause Game" placement="top">
                 <Button
                   style={{ marginRight: 10 }}
                   icon={<PauseOutlined />}
@@ -229,7 +229,7 @@ export const PatientCard: FC<IPatientCard> = ({
                   danger={!isPaused}
                 />
               </Tooltip>
-              <Tooltip title="Hand" placement="top">
+              <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Hand" placement="top">
                 <Button
                   style={{ marginRight: 10 }}
                   icon={<LikeOutlined />}
@@ -237,21 +237,21 @@ export const PatientCard: FC<IPatientCard> = ({
                   danger={isMirror}
                 />
               </Tooltip>
-              <Tooltip title="IK Rig Settings" placement="top">
+              <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="IK Rig Settings" placement="top">
                 <Button
                   style={{ marginRight: 10 }}
                   icon={<SkinOutlined />}
                   onClick={() => setShowIKRig(true)}
                 />
               </Tooltip>
-              <Tooltip title="Patients Cord." placement="top">
+              <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Patients Cord." placement="top">
                 <Button
                   style={{ marginRight: 10 }}
                   icon={<DotChartOutlined />}
                   onClick={() => setShowPatientCord(true)}
                 />
               </Tooltip>
-              <Tooltip title="Patients Rep." placement="right">
+              <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Patients Rep." placement="right">
                 <Button
                   style={{ marginRight: 10 }}
                   icon={<LineChartOutlined />}
@@ -282,7 +282,7 @@ export const PatientCard: FC<IPatientCard> = ({
           >
             <PatientInfoModal patient={patient} />
           </Modal>
-          <Tooltip title="Kick Patient" placement="right">
+          <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Kick Patient" placement="right">
             <Button
               icon={<UserDeleteOutlined />}
               danger
