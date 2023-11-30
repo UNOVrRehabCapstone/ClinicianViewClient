@@ -165,9 +165,7 @@ export const SessionScreen: FC<ISessionScreen> = ({
                 setShowStartGameButton(true)
               }
               if(e == "2"){
-                setShowBalloonCareerModeSettings(true);
-                setShowOptions(true);
-                setShowBalloonGoal(true)
+                setShowBalloonGameMode(true);
 
               }
               else{
@@ -246,6 +244,37 @@ export const SessionScreen: FC<ISessionScreen> = ({
             alignItems: 'center',
             width: "280px"
             }}>
+          {showBalloonGameMode ? (<span>Game Mode: </span>) : (<div></div>)}
+          {showBalloonGameMode ? (
+            <Tooltip title="Career - Progress through 5 levels!    Custom - Create your own custom rules!" placement="topLeft">
+              <Select
+                style={{ width: 150, marginRight: 10 }}
+                placeholder="Game Mode"
+                onChange={(e) =>{
+                  if(e=="0"){
+                    setShowOptions(false);
+                    setShowBalloonGoal(false);
+                    setShowBalloonSpawner(false);
+                    setShowLives(false);
+                    setShowBalloonCareerModeSettings(true);
+
+                  }
+                  if(e =="1"){
+                    setShowOptions(true);
+                    setShowBalloonGoal(true)
+                    setShowBalloonSpawner(false)
+                    setShowLives(true)
+                    setShowBalloonCareerModeSettings(false);
+                  }
+                  sessionContext.setCurrentBalloonGameMode(e)
+                }
+                }>
+                <Option value="0">Career Mode</Option>
+                <Option value="1">Custom Game</Option>
+              </Select>          
+            </Tooltip>
+          ) : (<div></div>)
+          }
         </Col>
       </Row>
       <Modal
@@ -278,6 +307,134 @@ export const SessionScreen: FC<ISessionScreen> = ({
           <Button onClick={changeName}>
           {sessionContext.patientList[0] ? (<span>{sessionContext.patientList[0].name}</span>) : (<div></div>)}        
           </Button>
+            <Tooltip title="Load a patient's game data" placement="topLeft">
+            </Tooltip>
+        </Col>
+      </Row>) : (<div></div>)}
+      
+      {showBalloonCareerModeSettings ? (
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+            }}>
+          <span>Current Level: </span>
+          <span>{sessionContext.balloonInfo.careerProgress}</span>
+            <Tooltip title="Load a patient's game data" placement="topLeft">
+            </Tooltip>
+        </Col>
+      </Row>) : (<div></div>)}
+            
+      {showBalloonCareerModeSettings ? (
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+            }}>
+          <span>Level One Score: </span>
+          <span>{sessionContext.balloonInfo.levelOneScore} / 3</span>
+            <Tooltip title="Load a patient's game data" placement="topLeft">
+            </Tooltip>
+        </Col>
+      </Row>) : (<div></div>)}
+      {showBalloonCareerModeSettings ? (
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+            }}>
+          <span>Level Two Score: </span>
+          <span>{sessionContext.balloonInfo.levelTwoScore} / 3</span>
+            <Tooltip title="Load a patient's game data" placement="topLeft">
+            </Tooltip>
+        </Col>
+      </Row>) : (<div></div>)}
+      {showBalloonCareerModeSettings ? (
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+            }}>
+          <span>Level Three Score: </span>
+          <span>{sessionContext.balloonInfo.levelThreeScore} / 3</span>
+            <Tooltip title="Load a patient's game data" placement="topLeft">
+            </Tooltip>
+        </Col>
+      </Row>) : (<div></div>)}
+      {showBalloonCareerModeSettings ? (
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+            }}>
+          <span>Level Four Score: </span>
+          <span>{sessionContext.balloonInfo.levelFourScore} / 3</span>
+            <Tooltip title="Load a patient's game data" placement="topLeft">
+            </Tooltip>
+        </Col>
+      </Row>) : (<div></div>)}
+      {showBalloonCareerModeSettings ? (
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+            }}>
+          <span>Level Five Score: </span>
+          <span>{sessionContext.balloonInfo.levelFiveScore} / 3</span>
             <Tooltip title="Load a patient's game data" placement="topLeft">
             </Tooltip>
         </Col>
@@ -336,45 +493,13 @@ export const SessionScreen: FC<ISessionScreen> = ({
                   sessionContext.setCurrentBalloonGameMode(e)
                 }
                 }>
-                <Option value="0">Automatic</Option>
+                <Option value="1">Automatic</Option>
                 <Option value="2">Manual</Option>
               </Select>          
             </Tooltip>
           ) : (<div></div>)
           }
           </Col>
-      </Row>
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-        }}>
-        <Col style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          width: "280px"
-        }}>
-          {showGameOptions && !showBalloonSpawner ? (<span>Hand:</span>) : (<div></div>)}
-          {showGameOptions && !showBalloonSpawner ? (
-          <Tooltip title="Select which hand(s) are able to score points" placement="topLeft">
-            <Select
-              style={{ width: 150, marginRight: 10 }}
-              placeholder="Hand"
-              onChange={(e) =>{
-                sessionContext.setCurrentValidHand(e);
-              }
-              }>
-            <Option value="0">Left</Option>
-            <Option value="1">Right</Option>
-            <Option value="2">Both</Option>
-            </Select>
-          </Tooltip>
-          ) : (<div></div>)
-          }    
-        </Col>
       </Row>
       <Row
         style={{
@@ -561,6 +686,38 @@ export const SessionScreen: FC<ISessionScreen> = ({
           ) : (<div></div>)
           }
           </Col>
+      </Row>
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+        }}>
+        <Col style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: "280px"
+        }}>
+          {showGameOptions && !showBalloonSpawner ? (<span>Hand:</span>) : (<div></div>)}
+          {showGameOptions && !showBalloonSpawner ? (
+          <Tooltip title="Select which hand(s) are able to score points" placement="topLeft">
+            <Select
+              style={{ width: 150, marginRight: 10 }}
+              placeholder="Hand"
+              onChange={(e) =>{
+                sessionContext.setCurrentValidHand(e);
+              }
+              }>
+            <Option value="0">Left</Option>
+            <Option value="1">Right</Option>
+            <Option value="2">Both</Option>
+            </Select>
+          </Tooltip>
+          ) : (<div></div>)
+          }    
+        </Col>
       </Row>
       <Row style={{ height: '60%' }}>
         <List

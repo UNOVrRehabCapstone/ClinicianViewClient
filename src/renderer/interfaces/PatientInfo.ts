@@ -16,4 +16,10 @@ export interface IPatientInfo {
 
 export interface BalloonProgress{
   achievementProgress: string;
+  careerProgress: string;
+  levelOneScore:  string;
+  levelTwoScore:  string;
+  levelThreeScore: string;
+  levelFourScore: string;
+  levelFiveScore: string;
 }
