@@ -1,4 +1,4 @@
-import { Button, Col, Input, Modal, Row, Tooltip } from "antd";
+import { Button, Col, Divider, Input, Modal, Row, Tooltip } from "antd";
 import { FC, useState } from "react";
 import { useSessionContext } from "renderer/context/SessionContext";
 
@@ -89,6 +89,29 @@ export const BalloonCareerMode: FC = () =>{
           padding: '10px',
           height: '10%'
           }}>
+        <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "300px"
+            }}>
+          <span><b><u>Level</u></b></span>
+          <span></span>
+          <span></span>
+          <span><b><u>Score</u></b></span>
+          <span></span>
+          <span><b><u>Play Button</u></b></span>
+        </Col>
+      </Row>
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          padding: '10px',
+          height: '10%'
+          }}>
+            
         <Col
           style={{
             display: 'flex',
