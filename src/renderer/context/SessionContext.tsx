@@ -50,13 +50,7 @@ const SessionContext = React.createContext<ISessionContext>(
   {} as ISessionContext
 );
 let tempBalloonInfo = {
-  achievementProgress: "0000000000",
-  careerProgress: "0",
-  levelOneScore: "0",
-  levelTwoScore: "0",
-  levelThreeScore: "0",
-  levelFourScore: "0",
-  levelFiveScore: "0",
+  achievementProgress: "0000000000"
 }
 
 export const SessionProvider = (props: { children: ReactElement }) => {
@@ -295,8 +289,7 @@ export const SessionProvider = (props: { children: ReactElement }) => {
   const loadPatientBalloonGameData = async( userName: string) => {
     let newData: BalloonProgress
     axiosContext.loadPatientBalloonData(userName).then((res:any) =>{
-      newData = {achievementProgress:  res.data.achievementProgress, careerProgress: res.data.careerProgress, levelOneScore: res.data.levelOneScore,
-      levelTwoScore: res.data.levelTwoScore, levelThreeScore: res.data.levelThreeScore, levelFourScore: res.data.levelFourScore, levelFiveScore: res.data.levelFiveScore}
+      newData = {achievementProgress:  res.data.achievementProgress}
       setBalloonInfo(newData);
       //patientList[0].info.balloonProgress= newData;
 
