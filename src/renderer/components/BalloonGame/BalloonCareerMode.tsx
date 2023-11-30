@@ -27,12 +27,13 @@ export const BalloonCareerMode: FC = () =>{
       }
 
 
+
       return(<div className="session-screen">
         <Modal
       open={showPatientNameModal}
       onCancel={() => setShowPatientNameModal(false)}
       onOk={onPatientNameChange}
-      okText="Change Name">
+      okText={"Load or refresh " + `${patientName}` +"'s data"}>
         <Input placeholder="New Name"
         value={patientName}
         onChange={handleInputChange}>
@@ -54,10 +55,11 @@ export const BalloonCareerMode: FC = () =>{
             width: "280px"
             }}>
           <span>Patient's Progression Profile: </span>
-          <Button onClick={changeName}>
-          {sessionContext.patientList[0] ? (<span>{sessionContext.patientList[0].name}</span>) : (<div></div>)}        
-          </Button>
-            <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Load a patient's game data" placement="topLeft">
+
+            <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Load or refresh a patient's game data" placement="topLeft">
+                <Button onClick={changeName}>
+                    {sessionContext.patientList[0] ? (<span>{sessionContext.patientList[0].name}</span>) : (<div></div>)}        
+                </Button>
             </Tooltip>
         </Col>
         </Row>
