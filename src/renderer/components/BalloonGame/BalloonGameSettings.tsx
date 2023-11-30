@@ -18,7 +18,6 @@ export const BalloonSettings: FC = () =>{
           display: 'flex',
           justifyContent: 'flex-start',
           padding: '10px',
-          height: '10%'
           }}>
         <Col
           style={{

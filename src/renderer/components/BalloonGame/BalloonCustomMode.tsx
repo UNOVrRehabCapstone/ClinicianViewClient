@@ -176,9 +176,12 @@ export const BalloonCustomMode: FC = () =>{
                 alignItems: 'center',
                 width: "280px"
               }}>
-                <Button type="primary" style={{width: "290px"}} onClick={() =>{sessionContext.manuallySpawnBalloon()}}>
-                  Spawn Balloon
-                </Button>
+                <Tooltip color={"rgba(64,168,254,1"} mouseLeaveDelay={0} title="Click to spawn a balloon. Make sure to start the game first using the button below!">
+                    <Button type="primary" style={{width: "290px"}} onClick={() =>{sessionContext.manuallySpawnBalloon()}}>
+                        Spawn Balloon
+                    </Button>
+                </Tooltip>
+
             </Col>
         </Row>  
             ) : ( <div></div>)}
@@ -217,71 +220,69 @@ export const BalloonCustomMode: FC = () =>{
           </Col>
         </Row>  
             ) : ( <div></div>)}
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-        }}>
-          <Col style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-          }}>
-          {!showBalloonSpawner ? (<span>Special Frequency: </span>) : (<div></div>)}
-          {!showBalloonSpawner ? (
-            <Tooltip color={"rgba(14,118,254,1)"}  mouseLeaveDelay={0} title="How many special balloons to spawn" placement='topLeft'>
-              <Select
-                style={{ width: 150, marginRight: 10 }}
-                defaultValue={"Medium"}
-                onChange={(e) =>{
-                  sessionContext.setCurrentPowerupFreq(e);
-                }
-                }>
-                <Option value="None">None</Option>
-                <Option value="Low">Low</Option>
-                <Option value="Medium">Medium</Option>
-                <Option value="High">High</Option>
-              </Select>
-            </Tooltip>
-          ) : (<div></div>)
-          }
-          </Col>
-      </Row>
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-        }}>
-        <Col style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          width: "280px"
-        }}>
-          {!showBalloonSpawner ? (<span>Hand:</span>) : (<div></div>)}
-          {!showBalloonSpawner ? (
-          <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Select which hand(s) are able to score points" placement="topLeft"  mouseLeaveDelay={0}>
-            <Select
-              style={{ width: 150, marginRight: 10 }}
-              defaultValue={"2"}
-              onChange={(e) =>{
-                sessionContext.setCurrentValidHand(e);
-              }
-              }>
-            <Option value="0">Left</Option>
-            <Option value="1">Right</Option>
-            <Option value="2">Both</Option>
-            </Select>
-          </Tooltip>
-          ) : (<div></div>)
-          }    
-        </Col>
-      </Row>
+            {!showBalloonSpawner ? (
+                 <Row
+                 style={{
+                   display: 'flex',
+                   justifyContent: 'flex-start',
+                   padding: '10px',
+                   height: '10%'
+                 }}>
+                   <Col style={{
+                     display: 'flex',
+                     justifyContent: 'space-between',
+                     alignItems: 'center',
+                     width: "280px"
+                   }}>
+                   <span>Special Frequency: </span>
+                     <Tooltip color={"rgba(14,118,254,1)"}  mouseLeaveDelay={0} title="How many special balloons to spawn" placement='topLeft'>
+                       <Select
+                         style={{ width: 150, marginRight: 10 }}
+                         defaultValue={"Medium"}
+                         onChange={(e) =>{
+                           sessionContext.setCurrentPowerupFreq(e);
+                         }
+                         }>
+                         <Option value="None">None</Option>
+                         <Option value="Low">Low</Option>
+                         <Option value="Medium">Medium</Option>
+                         <Option value="High">High</Option>
+                       </Select>
+                     </Tooltip>
+                   </Col>
+               </Row>
+            ) : (<div></div>)}
+            {!setShowBalloonSpawner ? (
+                  <Row
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    padding: '10px',
+                    height: '10%'
+                  }}>
+                  <Col style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: "280px"
+                  }}>
+                    <span>Hand:</span>
+                    <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Select which hand(s) are able to score points" placement="topLeft"  mouseLeaveDelay={0}>
+                      <Select
+                        style={{ width: 150, marginRight: 10 }}
+                        defaultValue={"2"}
+                        onChange={(e) =>{
+                          sessionContext.setCurrentValidHand(e);
+                        }
+                        }>
+                      <Option value="0">Left</Option>
+                      <Option value="1">Right</Option>
+                      <Option value="2">Both</Option>
+                      </Select>
+                    </Tooltip>
+                  </Col>
+                </Row>
+            ) : (<div></div>)}
       <Row
         style={{
           display: 'flex',
@@ -291,7 +292,7 @@ export const BalloonCustomMode: FC = () =>{
         }}>
         <Col >
         <Tooltip color={"rgba(14,118,254,1)"}  title="Begin a custom game with the above settings" mouseLeaveDelay={0}>
-        <Button style={{width:"270px"}}type="primary">Begin Custom Game</Button>
+        <Button style={{width:"280px"}}type="primary">Begin Custom Game</Button>
         </Tooltip>
 
         </Col>
