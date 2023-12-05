@@ -246,6 +246,7 @@ export const SessionProvider = (props: { children: ReactElement }) => {
       axiosContext.updateBalloonSettings(sessionKey, currentBalloonGameMode,currentBalloonTarget
         ,currentBalloonPowerupFreq, currentLeftRightRatio, currentSpawnPattern, currentMaxLives, currentValidHand)
     }
+    console.log("Starting");
     axiosContext
       .startGame(sessionKey, currentGame, auth.currentUser?.username, patientId)
       .then((res: any) => {

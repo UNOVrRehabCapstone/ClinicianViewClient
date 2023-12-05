@@ -292,7 +292,9 @@ export const BalloonCustomMode: FC = () =>{
         }}>
         <Col >
         <Tooltip color={"rgba(14,118,254,1)"}  title="Begin a custom game with the above settings" mouseLeaveDelay={0}>
-        <Button style={{width:"280px"}}type="primary">Begin Custom Game</Button>
+        <Button style={{width:"280px"}}type="primary" onClick={() => {
+          sessionContext.startGame(sessionContext.currentSession);
+        }}>Begin Custom Game</Button>
         </Tooltip>
 
         </Col>
