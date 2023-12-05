@@ -55,7 +55,6 @@ const LoginScreen = () => {
               Submit
             </Button>
           </Form.Item>
-          <Button onClick={() => history('/guest')}>Guest</Button>
         </Form>
       )}
     </div>
