@@ -8,8 +8,9 @@ import { IUser } from '../interfaces/User';
 import { IPatientInfo } from '../interfaces/PatientInfo';
 
 //const SERVER_IP = 'http://137.48.186.67:5000';
- const SERVER_IP = 'http://localhost:5000';
-
+ //const SERVER_IP = 'http://localhost:5000';
+ 
+ const SERVER_IP = 'http://35.182.185.82:5000';
 export interface IAxiosContext {
   login: (username: string, password: string) => Promise<any>;
   fetchSessions: () => Promise<any>;
@@ -44,6 +45,7 @@ export interface IAxiosContext {
     pattern: string,
     lives: string,
     hand: string,
+    careerModeLevelToPlay: string,
   ) => Promise<any>;
   manuallySpawnBalloon: (sessionKey: string) => Promise<any>;
   loadPatientBalloonData:(userName: string) => Promise<any>;
@@ -301,13 +303,14 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
     pattern: string,
     lives: string,
     hand: string,
+    careerModeLevelToPlay: string
 
   ) =>{
     const token = window.localStorage.getItem('token');
     try{
       const res2 = await axios.post(
         `${SERVER_IP}/updateBalloonSettings`,
-        {sessionKey, mode, target, freq, pattern, ratio, lives, hand},
+        {sessionKey, mode, target, freq, pattern, ratio, lives, hand, careerModeLevelToPlay},
         {
           headers: { Authorization: `${token}` },
         }

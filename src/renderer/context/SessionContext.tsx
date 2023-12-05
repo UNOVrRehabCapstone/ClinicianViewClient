@@ -25,7 +25,7 @@ export interface ISessionContext {
   getPatientsInSession: (sessionKey: string) => Promise<any>;
   patientList: IPatient[];
   balloonInfo: BalloonProgress;
-  startGame: (sessionKey: string, patientId?: string) => void;
+  startGame: (sessionKey: string, patientId?: string) => Promise<any>;
   getCurrentGame: () => string;
   setCurrentGame: (game: string) => void;
   setCurrentBalloonGameMode: (mode: string) => void;
@@ -35,9 +35,11 @@ export interface ISessionContext {
   setCurrentSpawnPattern: (pattern: string) => void;
   setCurrentMaxLives: (lives: string) => void;
   setCurrentValidHand: (hand: string) => void;
+  setCareerModeLevelToPlay:(level: string) => Promise<any>;
   manuallySpawnBalloon: (patientId?: string) => void;
   loadPatientBalloonGameData: (userName: string) => void;
   deletePatientFromSession: (patientIn: string) => void;
+  sendBalloonGameSettings: (sessonKey: string) => void;
   getPatientPositionalData: (
     patientName: string,
     patientSocketId: string
@@ -73,18 +75,25 @@ export const SessionProvider = (props: { children: ReactElement }) => {
 
   const [patientList, setPatientList] = useState<IPatient[]>([]);
   const [currentGame, setCurrentGame] = useState('0');
-  const [currentBalloonGameMode, setCurrentBalloonGameMode] = useState('0');
+  const [currentBalloonGameMode, setCurrentBalloonGameMode] = useState('1');
   const [currentBalloonTarget, setCurrentBalloonTarget] = useState('10');
-  const [currentBalloonPowerupFreq, setCurrentPowerupFreq] = useState('None');
+  const [currentBalloonPowerupFreq, setCurrentPowerupFreq] = useState('Low');
   const [currentLeftRightRatio, setCurrentLeftRightRatio] = useState('0.5');
-  const [currentSpawnPattern, setCurrentSpawnPattern] = useState('0');
+  const [currentSpawnPattern, setCurrentSpawnPattern] = useState('1');
   const [currentMaxLives, setCurrentMaxLives] = useState('5');
   const [currentValidHand, setCurrentValidHand] = useState('2');
+  //const [careerModeLevelToPlay, setCareerModeLevelToPlay] = useState("0");
   const [balloonInfo, setBalloonInfo] = useState<BalloonProgress>(tempBalloonInfo);
   const auth = useUserContext();
   const axiosContext = useAxiosContext();
   const socket = useSocketContext();
   const history = useNavigate();
+
+  let careerModeLevelToPlay = "0";
+  const setCareerModeLevelToPlay = async (level: string) =>{
+    careerModeLevelToPlay = level;
+
+  }
 
   useEffect(() => {
     if (!socket.connected) {
@@ -105,6 +114,7 @@ export const SessionProvider = (props: { children: ReactElement }) => {
       })
       .catch((err: any) => message.error(err));
   };
+
 
   const createSession = (name: string, cb: Function) => {
     if (auth.currentUser === undefined) return false;
@@ -240,18 +250,25 @@ export const SessionProvider = (props: { children: ReactElement }) => {
       .catch((err: any) => message.error(err));
   };
 
-  const startGame = (sessionKey: string, patientId?: string) => {
-    //If the game is the balloon game, update balloon settings
-    if(currentGame == "2"){
-      axiosContext.updateBalloonSettings(sessionKey, currentBalloonGameMode,currentBalloonTarget
-        ,currentBalloonPowerupFreq, currentLeftRightRatio, currentSpawnPattern, currentMaxLives, currentValidHand)
-    }
+  const startGame = async (sessionKey: string, patientId?: string) => {
     axiosContext
       .startGame(sessionKey, currentGame, auth.currentUser?.username, patientId)
       .then((res: any) => {
         return res;
       })
       .catch((err: any) => message.error(err));
+  };
+
+
+  const sendBalloonGameSettings = async (sessionKey: string, patientId?: string) => {
+    //If the game is the balloon game, update balloon settings
+    if(currentGame == "2"){
+      console.log(careerModeLevelToPlay);
+      await axiosContext.updateBalloonSettings(sessionKey, currentBalloonGameMode,currentBalloonTarget
+        ,currentBalloonPowerupFreq, currentLeftRightRatio, currentSpawnPattern, currentMaxLives, currentValidHand,careerModeLevelToPlay)
+        return;
+    }
+    return;
   };
 
 
@@ -347,6 +364,8 @@ export const SessionProvider = (props: { children: ReactElement }) => {
         getCurrentGame,
         manuallySpawnBalloon,
         loadPatientBalloonGameData,
+        sendBalloonGameSettings,
+        setCareerModeLevelToPlay,
         balloonInfo
       }}
     >

@@ -166,9 +166,7 @@ export const SessionScreen: FC<ISessionScreen> = ({
                 else{
                   setShowBalloonSettings(false);
                 }
-                sessionContext.startGame(
-                  sessionContext.currentSession?.sessionKey
-                )
+                sessionContext.startGame(sessionContext.currentSession?.sessionKey)
                 
               }
               }

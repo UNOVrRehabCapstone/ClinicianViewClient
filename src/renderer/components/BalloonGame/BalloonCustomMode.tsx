@@ -47,9 +47,9 @@ export const BalloonCustomMode: FC = () =>{
             <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Choose if balloons should automatically spawn or not" placement="topLeft">
               <Select
                 style={{ width: 150, marginRight: 10 }}
-                defaultValue={"0"}
+                defaultValue={"1"}
                 onChange={(e) =>{
-                  if(e == "0"){
+                  if(e == "1"){
                     setShowBalloonSpawner(false)
                   }
                   else{
@@ -58,7 +58,7 @@ export const BalloonCustomMode: FC = () =>{
                   sessionContext.setCurrentBalloonGameMode(e)
                 }
                 }>
-                <Option value="0">Automatic</Option>
+                <Option value="1">Automatic</Option>
                 <Option value="2">Manual</Option>
               </Select>          
             </Tooltip>
@@ -238,7 +238,7 @@ export const BalloonCustomMode: FC = () =>{
                      <Tooltip color={"rgba(14,118,254,1)"}  mouseLeaveDelay={0} title="How many special balloons to spawn" placement='topLeft'>
                        <Select
                          style={{ width: 150, marginRight: 10 }}
-                         defaultValue={"Medium"}
+                         defaultValue={"Low"}
                          onChange={(e) =>{
                            sessionContext.setCurrentPowerupFreq(e);
                          }
@@ -292,7 +292,10 @@ export const BalloonCustomMode: FC = () =>{
         }}>
         <Col >
         <Tooltip color={"rgba(14,118,254,1)"}  title="Begin a custom game with the above settings" mouseLeaveDelay={0}>
-        <Button style={{width:"280px"}}type="primary">Begin Custom Game</Button>
+        <Button style={{width:"280px"}}type="primary" onClick={() =>{
+          sessionContext.startGame(sessionContext.currentSession?.sessionKey)
+          sessionContext.sendBalloonGameSettings(sessionContext.currentSession?.sessionKey);
+        }}>Begin Custom Game</Button>
         </Tooltip>
 
         </Col>

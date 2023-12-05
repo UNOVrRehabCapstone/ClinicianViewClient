@@ -1,7 +1,7 @@
 import './PatientCard.css';
 
 import React, { FC, useEffect, useState } from 'react';
-import { Button, Col, List, Modal, Row, Tooltip } from 'antd';
+import { Button, Col, Input, List, Modal, Row, Tooltip } from 'antd';
 
 import {
   DragOutlined,
@@ -48,6 +48,9 @@ export const PatientCard: FC<IPatientCard> = ({
   const [showPatientCord, setShowPatientCord] = useState(false);
   const [showPatientRep, setShowPatientRep] = useState(false);
   const [viewPatientModal, setViewPatientModal] = useState(false);
+  const [patientName, setName] = useState('Patient')
+  const [showPatientNameModal, setShowPatientNameModal] = useState(false);
+
 
   const handlePatientPauseGame = () => {
     if (isPaused) {
@@ -66,6 +69,21 @@ export const PatientCard: FC<IPatientCard> = ({
   useEffect(() => {
     console.log(patient);
   }, []);
+
+
+  const onPatientNameChange = () => {
+    console.log(patientName);
+    if(sessionContext.patientList[0]){
+      sessionContext.patientList[0].name=patientName
+      sessionContext.loadPatientBalloonGameData(sessionContext.patientList[0].name)
+    }
+    setShowPatientNameModal(false);
+  }
+
+  const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
+    setName(e.target.value)
+
+  }
 
   return (
     <List.Item className="patient-card">
@@ -192,19 +210,30 @@ export const PatientCard: FC<IPatientCard> = ({
       >
         <Col style={{}}>
           {patient.name}
-          <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Enter Patient" placement="top">
+          <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Change patient game profile" placement="top">
             <Button
               style={{ margin: '0 2rem' }}
               icon={<EnterOutlined />}
-              disabled
               onClick={() =>
-                history(
-                  `/session/${session.currentSession?.sessionKey}/patient/${patient.name}/${patient.socketId}`
-                )
+               // history(
+                 // `/session/${session.currentSession?.sessionKey}/patient/${patient.name}/${patient.socketId}`
+                //)
+                setShowPatientNameModal(true)
               }
             />
           </Tooltip>
         </Col>
+        <Modal
+      open={showPatientNameModal}
+      onCancel={() => setShowPatientNameModal(false)}
+      onOk={onPatientNameChange}
+      okText={"Load or refresh " + `${patientName}` +"'s data"}>
+        <Input placeholder="New Name"
+        value={patientName}
+        onChange={handleInputChange}>
+
+        </Input>
+      </Modal>
         {patientGame === '0' ? (
           <p
             style={{ textAlign: 'center', margin: 'auto', color: 'lightgray' }}

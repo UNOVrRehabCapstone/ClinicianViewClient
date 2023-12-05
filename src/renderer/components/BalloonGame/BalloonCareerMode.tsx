@@ -3,67 +3,16 @@ import { FC, useState } from "react";
 import { useSessionContext } from "renderer/context/SessionContext";
 
 export const BalloonCareerMode: FC = () =>{
-    const [showPatientNameModal, setShowPatientNameModal] = useState(false);
+
+  const startCareerLevel = async (level: string) =>{
+    await sessionContext.setCareerModeLevelToPlay(level);
+    await sessionContext.startGame(sessionContext.currentSession?.sessionKey)
+     sessionContext.sendBalloonGameSettings(sessionContext.currentSession?.sessionKey)
+
+  }
+
     const sessionContext = useSessionContext();
-    const [patientName, setName] = useState('Patient')
-
-    const changeName = () => {
-        setShowPatientNameModal(true);
-      }
-
-
-    const onPatientNameChange = () => {
-        console.log(patientName);
-        if(sessionContext.patientList[0]){
-          sessionContext.patientList[0].name=patientName
-          sessionContext.loadPatientBalloonGameData(sessionContext.patientList[0].name)
-        }
-        setShowPatientNameModal(false);
-      }
-
-      const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
-        setName(e.target.value)
-    
-      }
-
-
-
       return(<div className="session-screen">
-        <Modal
-      open={showPatientNameModal}
-      onCancel={() => setShowPatientNameModal(false)}
-      onOk={onPatientNameChange}
-      okText={"Load or refresh " + `${patientName}` +"'s data"}>
-        <Input placeholder="New Name"
-        value={patientName}
-        onChange={handleInputChange}>
-
-        </Input>
-      </Modal>
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-          }}>
-        <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-            }}>
-          <span>Patient's Progression Profile: </span>
-
-            <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Load or refresh a patient's game data" placement="topLeft">
-                <Button onClick={changeName}>
-                    {sessionContext.patientList[0] ? (<span>{sessionContext.patientList[0].name}</span>) : (<div></div>)}        
-                </Button>
-            </Tooltip>
-        </Col>
-        </Row>
-      
       <Row
         style={{
           display: 'flex',
@@ -123,7 +72,12 @@ export const BalloonCareerMode: FC = () =>{
             }}>
           <span>Level One: </span>
           <span>{sessionContext.balloonInfo.levelOneScore} / 3</span>
-          <Button>Play</Button>
+          <Button onClick={ () =>{
+            startCareerLevel("0");
+          }
+
+
+          }>Play</Button>
         </Col>
       </Row>
       <Row
@@ -142,7 +96,12 @@ export const BalloonCareerMode: FC = () =>{
             }}>
           <span>Level Two: </span>
           <span>{sessionContext.balloonInfo.levelTwoScore} / 3</span>
-          <Button>Play</Button>
+          <Button onClick={ () =>{
+            startCareerLevel("1");
+          }
+
+
+          }>Play</Button>
         </Col>
       </Row>
       <Row
@@ -161,7 +120,12 @@ export const BalloonCareerMode: FC = () =>{
             }}>
           <span>Level Three: </span>
           <span>{sessionContext.balloonInfo.levelThreeScore} / 3</span>
-          <Button>Play</Button>
+          <Button onClick={ () =>{
+            startCareerLevel("2");
+          }
+
+
+          }>Play</Button>
         </Col>
       </Row>
       <Row
@@ -180,7 +144,12 @@ export const BalloonCareerMode: FC = () =>{
             }}>
           <span>Level Four: </span>
           <span>{sessionContext.balloonInfo.levelFourScore} / 3</span>
-          <Button>Play</Button>
+          <Button onClick={ () =>{
+            startCareerLevel("3");
+          }
+
+
+          }>Play</Button>
         </Col>
       </Row>
       <Row
@@ -199,7 +168,12 @@ export const BalloonCareerMode: FC = () =>{
             }}>
           <span>Level Five: </span>
           <span>{sessionContext.balloonInfo.levelFiveScore} / 3</span>
-          <Button>Play</Button>
+          <Button onClick={ () =>{
+            startCareerLevel("4");
+          }
+
+
+          }>Play</Button>
         </Col>
       </Row>
       <Row
