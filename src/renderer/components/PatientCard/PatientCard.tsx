@@ -1,7 +1,7 @@
 import './PatientCard.css';
 
 import React, { FC, useEffect, useState } from 'react';
-import { Button, Col, Input, List, Modal, Row, Tooltip } from 'antd';
+import { Button, Col, Divider, Input, List, Modal, Row, Tooltip } from 'antd';
 
 import {
   DragOutlined,
@@ -25,6 +25,7 @@ import RepModal from './Modals/RepModal';
 import { useNavigate } from 'react-router-dom';
 import UserContext, { useUserContext } from 'renderer/context/UserContext';
 import { useSocketContext } from 'renderer/context/SocketContext';
+import { BalloonSettings } from '../BalloonGame/BalloonGameSettings';
 
 export interface IPatientCard {
   patient: IPatient;
@@ -54,8 +55,10 @@ export const PatientCard: FC<IPatientCard> = ({
 
   const handlePatientPauseGame = () => {
     if (isPaused) {
+      socketContext.testSocket(patient);
       socketContext.resumeGame(patient);
     } else {
+      socketContext.testSocket(patient);
       socketContext.pauseGame(patient);
     }
     setIsPaused(!isPaused);
@@ -67,7 +70,7 @@ export const PatientCard: FC<IPatientCard> = ({
   };
 
   useEffect(() => {
-    console.log(patient);
+    //console.log(patient);
   }, []);
 
 
@@ -86,6 +89,7 @@ export const PatientCard: FC<IPatientCard> = ({
   }
 
   return (
+    <div>
     <List.Item className="patient-card">
       {/* Positioning Modal */}
       <Modal
@@ -324,5 +328,16 @@ export const PatientCard: FC<IPatientCard> = ({
         </Col>
       </Row>
     </List.Item>
+
+    {sessionContext.showBalloonSettings ? (<div>
+        <Divider orientation='center' style={{border:'10px'}} >
+          Balloon Game
+        </Divider>
+        <BalloonSettings patient={patient}/>
+        </div>) : (<div></div>)}
+    </div>
+
+
+    
   );
 };

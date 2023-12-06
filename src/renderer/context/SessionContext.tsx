@@ -23,43 +23,34 @@ export interface ISessionContext {
   addClientsToSession: (clientList: string[], sessionKey: string) => void;
   clientListLoading: boolean;
   getPatientsInSession: (sessionKey: string) => Promise<any>;
+  loadPatientBalloonGameData:(name: string) => Promise<any>;
   patientList: IPatient[];
-  balloonInfo: BalloonProgress;
   startGame: (sessionKey: string, patientId?: string) => Promise<any>;
   getCurrentGame: () => string;
   setCurrentGame: (game: string) => void;
-  setCurrentBalloonGameMode: (mode: string) => void;
-  setCurrentBalloonTarget: (target: string) => void;
-  setCurrentPowerupFreq: (freq: string) => void;
-  setCurrentLeftRightRatio: (ratio: string) => void;
-  setCurrentSpawnPattern: (pattern: string) => void;
-  setCurrentMaxLives: (lives: string) => void;
-  setCurrentValidHand: (hand: string) => void;
-  setCareerModeLevelToPlay:(level: string) => Promise<any>;
-  manuallySpawnBalloon: (patientId?: string) => void;
-  loadPatientBalloonGameData: (userName: string) => void;
+  setShowBalloonSettings:(show: boolean) => void;
+  currentScenery: string;
+  showBalloonSettings: boolean;
   deletePatientFromSession: (patientIn: string) => void;
-  sendBalloonGameSettings: (sessonKey: string) => void;
   getPatientPositionalData: (
     patientName: string,
     patientSocketId: string
   ) => void;
   updatePatientInfo: (values: IPatientInfo) => Promise<void>;
   getPatient: (patientID: string, patientName: string) => Promise<any>;
+  achievementsList: boolean[];
+  setBalloonInfo:(progress: BalloonProgress) => void;
+  
+  setCurrentScenery:(scenery: string) => void;
+
+  balloonInfo: BalloonProgress;
 }
+
 
 const SessionContext = React.createContext<ISessionContext>(
   {} as ISessionContext
 );
-let tempBalloonInfo = {
-  achievementProgress: "0000000000",
-  careerProgress: "0",
-  levelOneScore: "0",
-  levelTwoScore: "0",
-  levelThreeScore: "0",
-  levelFourScore: "0",
-  levelFiveScore: "0",
-}
+
 
 export const SessionProvider = (props: { children: ReactElement }) => {
   const [sessionList, setSessionList] = useState<ISession[]>([]);
@@ -75,25 +66,42 @@ export const SessionProvider = (props: { children: ReactElement }) => {
 
   const [patientList, setPatientList] = useState<IPatient[]>([]);
   const [currentGame, setCurrentGame] = useState('0');
-  const [currentBalloonGameMode, setCurrentBalloonGameMode] = useState('1');
-  const [currentBalloonTarget, setCurrentBalloonTarget] = useState('10');
-  const [currentBalloonPowerupFreq, setCurrentPowerupFreq] = useState('Low');
-  const [currentLeftRightRatio, setCurrentLeftRightRatio] = useState('0.5');
-  const [currentSpawnPattern, setCurrentSpawnPattern] = useState('1');
-  const [currentMaxLives, setCurrentMaxLives] = useState('5');
-  const [currentValidHand, setCurrentValidHand] = useState('2');
-  //const [careerModeLevelToPlay, setCareerModeLevelToPlay] = useState("0");
+  const [currentScenery, setCurrentScenery] = useState('1');
+
+  const [showBalloonSettings, setShowBalloonSettings] = useState(false);
+
+
+  let tempBalloonInfo = {
+    achievementProgress: "0000000000",
+    careerProgress: "0",
+    levelOneScore: "0",
+    levelTwoScore: "0",
+    levelThreeScore: "0",
+    levelFourScore: "0",
+    levelFiveScore: "0",
+    
+  }
+  let achievements: boolean[] = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]
+
   const [balloonInfo, setBalloonInfo] = useState<BalloonProgress>(tempBalloonInfo);
+  const [achievementsList, setAchievements] = useState<boolean[]>(achievements);
   const auth = useUserContext();
   const axiosContext = useAxiosContext();
   const socket = useSocketContext();
   const history = useNavigate();
 
-  let careerModeLevelToPlay = "0";
-  const setCareerModeLevelToPlay = async (level: string) =>{
-    careerModeLevelToPlay = level;
 
-  }
 
   useEffect(() => {
     if (!socket.connected) {
@@ -244,7 +252,7 @@ export const SessionProvider = (props: { children: ReactElement }) => {
         // res.forEach((patient) => {
         //   patient.sessionKey = currentSession?.sessionKey;
         // });
-        console.log(res);
+        //console.log(res);
         return setPatientList(res);
       })
       .catch((err: any) => message.error(err));
@@ -252,37 +260,46 @@ export const SessionProvider = (props: { children: ReactElement }) => {
 
   const startGame = async (sessionKey: string, patientId?: string) => {
     axiosContext
-      .startGame(sessionKey, currentGame, auth.currentUser?.username, patientId)
+      .startGame(sessionKey, currentGame, auth.currentUser?.username, patientId, currentScenery)
       .then((res: any) => {
         return res;
       })
       .catch((err: any) => message.error(err));
   };
 
+  const loadPatientBalloonGameData = async( userName: string) => {
+    let newData: BalloonProgress
+    axiosContext.loadPatientBalloonData(userName).then((res:any) =>{
+      console.log(res);
+      newData = {achievementProgress:  res.data.achievementProgress,
+          careerProgress: res.data.careerProgress,
+          levelOneScore: res.data.levelOneScore,
+          levelTwoScore: res.data.levelTwoScore,
+          levelThreeScore: res.data.levelThreeScore,
+          levelFourScore: res.data.levelFourScore,
+          levelFiveScore: res.data.levelFiveScore,
+          ach0: res.data.ach0,
+          ach1: res.data.ach1,
+          ach2: res.data.ach2,
+          ach3: res.data.ach3,
+          ach4: res.data.ach4,
+          ach5: res.data.ach5,
+          ach6: res.data.ach6,
+          ach7: res.data.ach7,
+          ach8: res.data.ach8,
+          ach9: res.data.ach9,}
 
-  const sendBalloonGameSettings = async (sessionKey: string, patientId?: string) => {
-    //If the game is the balloon game, update balloon settings
-    if(currentGame == "2"){
-      console.log(careerModeLevelToPlay);
-      await axiosContext.updateBalloonSettings(sessionKey, currentBalloonGameMode,currentBalloonTarget
-        ,currentBalloonPowerupFreq, currentLeftRightRatio, currentSpawnPattern, currentMaxLives, currentValidHand,careerModeLevelToPlay)
-        return;
-    }
-    return;
-  };
+      setBalloonInfo(newData);
+      //patientList[0].info.balloonProgress= newData;
+    })
+  }
 
 
-  const manuallySpawnBalloon = (patientId?: string) => {
-    axiosContext
-      .manuallySpawnBalloon(currentSession?.sessionKey)
-      .then((res: any) => {
-        return res;
-      })
-      .catch((err: any) => message.error(err));
-  };
+
   const getCurrentGame = () => {
     return currentGame;
   }
+
 
 
   const getPatientPositionalData = (
@@ -309,16 +326,7 @@ export const SessionProvider = (props: { children: ReactElement }) => {
       .catch((err: any) => message.error(err));
   };
 
-  const loadPatientBalloonGameData = async( userName: string) => {
-    let newData: BalloonProgress
-    axiosContext.loadPatientBalloonData(userName).then((res:any) =>{
-      newData = {achievementProgress:  res.data.achievementProgress, careerProgress: res.data.careerProgress, levelOneScore: res.data.levelOneScore,
-      levelTwoScore: res.data.levelTwoScore, levelThreeScore: res.data.levelThreeScore, levelFourScore: res.data.levelFourScore, levelFiveScore: res.data.levelFiveScore}
-      setBalloonInfo(newData);
-      //patientList[0].info.balloonProgress= newData;
 
-    })
-  }
 
   const getPatient = async (patientID: string, patientName: string) => {
     return axiosContext
@@ -353,20 +361,18 @@ export const SessionProvider = (props: { children: ReactElement }) => {
         getPatientPositionalData,
         updatePatientInfo,
         getPatient,
-        setCurrentBalloonGameMode,
-        setCurrentPowerupFreq,
-        setCurrentBalloonTarget,
-        setCurrentLeftRightRatio,
-        setCurrentGame,
-        setCurrentSpawnPattern,
-        setCurrentMaxLives,
-        setCurrentValidHand,
-        getCurrentGame,
-        manuallySpawnBalloon,
         loadPatientBalloonGameData,
-        sendBalloonGameSettings,
-        setCareerModeLevelToPlay,
-        balloonInfo
+        setCurrentGame,
+        getCurrentGame,
+        showBalloonSettings,
+        balloonInfo,
+        currentScenery,
+        setShowBalloonSettings,
+        setCurrentScenery,
+        achievementsList,
+        setBalloonInfo,
+
+
       }}
     >
       {children}

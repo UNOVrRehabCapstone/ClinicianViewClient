@@ -11,10 +11,6 @@ import { useNavigate } from 'react-router-dom';
 import { ISession } from '../../interfaces/Session';
 import PatientCard from '../../components/PatientCard';
 import { useSessionContext } from '../../context/SessionContext';
-import FormItemLabel from 'antd/es/form/FormItemLabel';
-import { IPatientInfo } from 'renderer/interfaces/PatientInfo';
-import Input from 'antd/lib/input/Input';
-import { BalloonSettings } from 'renderer/components/BalloonGame/BalloonGameSettings';
 
 const { Option } = Select;
 
@@ -29,7 +25,6 @@ export const SessionScreen: FC<ISessionScreen> = ({
   const sessionContext = useSessionContext();
   const [showStartGameButton, setShowStartGameButton] = useState(false);
   const [showAddPatientsModal, setShowAddPatientsModal] = useState(false);
-  const [showBalloonSettings, setShowBalloonSettings] = useState(false);
   const [selectedPatientsToAdd, setSelectedPatientsToAdd] = useState<string[]>(
     []
   );
@@ -161,10 +156,10 @@ export const SessionScreen: FC<ISessionScreen> = ({
               icon={<PlayCircleOutlined/>}
               onClick={() =>{
                 if(sessionContext.getCurrentGame() == "2"){
-                  setShowBalloonSettings(true);
+                  sessionContext.setShowBalloonSettings(true);
                 }
                 else{
-                  setShowBalloonSettings(false);
+                  sessionContext.setShowBalloonSettings(false);
                 }
                 sessionContext.startGame(sessionContext.currentSession?.sessionKey)
                 
@@ -226,12 +221,7 @@ export const SessionScreen: FC<ISessionScreen> = ({
       </Row>
 
 
-      {showBalloonSettings ? (<div>
-        <Divider orientation='center' style={{border:'10px'}} >
-          Balloon Game
-        </Divider>
-        <BalloonSettings/>
-        </div>) : (<div></div>)}
+
 
 
     </div>

@@ -11,10 +11,10 @@ import { IPatientInfo } from '../interfaces/PatientInfo';
 //const SERVER_IP = 'http://137.48.186.67:5000';
 
 // Local
- //const SERVER_IP = 'http://localhost:5000';
+ const SERVER_IP = 'http://localhost:5000';
 
  // AWS lightsail instance
- const SERVER_IP = 'http://35.182.185.82:5000';
+ //const SERVER_IP = 'http://35.182.185.82:5000';
 
 export interface IAxiosContext {
   login: (username: string, password: string) => Promise<any>;
@@ -39,20 +39,9 @@ export interface IAxiosContext {
     sessionKey: string,
     game: string,
     clinician: string,
-    patientSocketId: string
+    patientSocketId: string,
+    environment: string
   ) => Promise<number | null>;
-  updateBalloonSettings:(
-    sessionKey: string,
-    mode: string,
-    target: string,
-    freq: string,
-    ratio: string,
-    pattern: string,
-    lives: string,
-    hand: string,
-    careerModeLevelToPlay: string,
-  ) => Promise<any>;
-  manuallySpawnBalloon: (sessionKey: string) => Promise<any>;
   loadPatientBalloonData:(userName: string) => Promise<any>;
   deleteSession: (sessionKey: string) => Promise<number | null>;
   removePatientFromSession: (
@@ -282,13 +271,14 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
     sessionKey: string,
     game: string,
     clinician: string,
-    patientSocketId: string
+    patientSocketId: string,
+    environment: string
   ) => {
     const token = window.localStorage.getItem('token');
     try {
       const res = await axios.post(
         `${SERVER_IP}/startGame`,
-        { sessionKey, game, userName: clinician, patientSocketId },
+        { sessionKey, game, userName: clinician, patientSocketId, environment: environment},
         {
           headers: { Authorization: `${token}` },
         }
@@ -299,53 +289,9 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
       return unauthorized();
     }
   };
-  const updateBalloonSettings = async(
-    sessionKey: string,
-    mode: string,
-    target: string,
-    freq: string,
-    ratio: string,
-    pattern: string,
-    lives: string,
-    hand: string,
-    careerModeLevelToPlay: string
 
-  ) =>{
-    const token = window.localStorage.getItem('token');
-    try{
-      const res2 = await axios.post(
-        `${SERVER_IP}/updateBalloonSettings`,
-        {sessionKey, mode, target, freq, pattern, ratio, lives, hand, careerModeLevelToPlay},
-        {
-          headers: { Authorization: `${token}` },
-        }
-      );
-      return res2.status;
-    } catch( error: any){
-      message.error(error);
-      return unauthorized();
-    }
-
-  }
   
-  const manuallySpawnBalloon = async(
-    sessionKey: string
-  ) => {
-    const token = window.localStorage.getItem('token');
-    try{
-      const res2 = await axios.post(
-        `${SERVER_IP}/manuallySpawnBalloon`,
-        {sessionKey},
-        {
-          headers: { Authorization: `${token}` },
-        }
-      );
-      return res2.status;
-    } catch( error: any){
-      message.error(error);
-      return unauthorized();
-    }
-  }
+
   const loadPatientBalloonData = async(
     userName: string
   ) =>{
@@ -453,7 +399,6 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
       value={{
         getPatientsInSession,
         startGame,
-        updateBalloonSettings,
         login,
         fetchSessions,
         createSession,
@@ -470,7 +415,6 @@ export const AxiosProvider = (props: { children: ReactElement }) => {
         updatePatientInfo,
         savePatientRepData,
         getPatient,
-        manuallySpawnBalloon,
         loadPatientBalloonData
       }}
     >
