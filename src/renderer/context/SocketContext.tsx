@@ -55,13 +55,24 @@ export interface ISocketContext {
   setCurrentSpawnPattern: (pattern: string) => void;
   setCurrentMaxLives: (lives: string) => void;
   setCurrentValidHand: (hand: string) => void;
-  setCareerModeLevelToPlay: (level: string) => Promise<any>;
+  setCareerModeLevelToPlay: (level: string) => void;
   setCurrentBalloonSpeedModifier:(modifier: string) => void;
   manuallySpawnBalloon: (patient: IPatient) => void;
   sendBalloonGameSettings: (patient: IPatient) => void;
   setCurrentNumOfBalloonsAtOnce:(maxAtOnce: string) => void;
   setCurrentTimeBetweenSpawns:(timeBetween: string) => void;
   moveDart:(patient: IPatient, isUp: boolean) => void;
+
+  currentBalloonGameMode: string;
+  currentBalloonTarget: string
+  currentBalloonPowerupFreq: string
+  currentLeftRightRatio: string
+  currentSpawnPattern: string
+  currentMaxLives: string
+  currentValidHand: string
+  currentBalloonSpeedModifier: string
+  currentNumOfBalloonsAtOnce: string
+  currentTimeBetweenSpawns: string
 }
 
 
@@ -166,6 +177,11 @@ export const SocketProvider = (props: { children: ReactElement }) => {
       newSocket.close();
     };
   }, [setSocket]);
+
+
+  useEffect(() => {
+    console.log(currentSpawnPattern)  
+  }, [currentSpawnPattern]);
 
   const sendMessage = (messageId: string, object: any) => {
     if (socket) {
@@ -304,6 +320,16 @@ export const SocketProvider = (props: { children: ReactElement }) => {
         manuallySpawnBalloon,
         sendBalloonGameSettings,
         setCurrentBalloonSpeedModifier,
+        currentBalloonGameMode,
+        currentBalloonPowerupFreq,
+        currentBalloonSpeedModifier,
+        currentBalloonTarget,
+        currentMaxLives,
+        currentLeftRightRatio,
+        currentNumOfBalloonsAtOnce,
+        currentSpawnPattern,
+        currentTimeBetweenSpawns,
+        currentValidHand,
         setCareerModeLevelToPlay,
         setCurrentNumOfBalloonsAtOnce,
         setCurrentTimeBetweenSpawns,

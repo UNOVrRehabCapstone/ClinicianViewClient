@@ -9,12 +9,12 @@ import { IBalloonSettingsPage } from "./BalloonGameSettings";
 export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
   patient
 }) =>{
-
-    const { Option } = Select;
-    const [showBalloonSpawner, setShowBalloonSpawner]=useState(false);
-    const [disableBalloonRatioSlider, setDisableBalloonRatioSlider] = useState(true);
     const sessionContext = useSessionContext();
     const socketContext = useSocketContext();
+    const { Option } = Select;
+    const [showBalloonSpawner, setShowBalloonSpawner]=useState(false);
+    const [disableBalloonRatioSlider, setDisableBalloonRatioSlider] = useState((socketContext.currentSpawnPattern == "2"));
+
     
     const marks: SliderMarks = {
         0.0: " Left",
@@ -54,7 +54,7 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
             <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Choose if balloons should automatically spawn or not" placement="topLeft">
               <Select
                 style={{ width: 150, marginRight: 10 }}
-                defaultValue={"1"}
+                defaultValue={socketContext.currentBalloonGameMode}
                 onChange={(e) =>{
                   if(e == "1"){
                     setShowBalloonSpawner(false)
@@ -82,7 +82,7 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
             <Tooltip color={"rgba(14,118,254,1)"}  mouseLeaveDelay={0}  title="Set how fast balloons float upwards" placement='topLeft'>
               <Select
                 style={{ width: 150, marginRight: 10 }}
-                defaultValue={"2"}
+                defaultValue={socketContext.currentBalloonSpeedModifier}
                 onChange={(e) =>{
                   socketContext.setCurrentBalloonSpeedModifier(e)
                 }}
@@ -120,8 +120,9 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
             <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Alternating - Spawn left THEN right Concurrent - Spawn left AND right Ratio - Chance based spawning" placement="topLeft">
               <Select
                 style={{ width: 150, marginRight: 10 }}
-                defaultValue={"1"}
+                defaultValue={socketContext.currentSpawnPattern}
                 onChange={(e) =>{
+                  
                   if(e == "2"){
                     setDisableBalloonRatioSlider(false)
                   }
@@ -129,7 +130,7 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
                     setDisableBalloonRatioSlider(true)
                   }
                   socketContext.setCurrentSpawnPattern(e)
-
+                  console.log(socketContext.currentSpawnPattern == "2");
                 }
                 }>
                 <Option value="1">Alternating</Option>
@@ -177,7 +178,7 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
             <Tooltip color={"rgba(14,118,254,1)"}  mouseLeaveDelay={0}  title="Limit how many balloons be can spawned at once" placement='topLeft'>
               <Select
                 style={{ width: 150, marginRight: 10 }}
-                defaultValue={"2"}
+                defaultValue={socketContext.currentNumOfBalloonsAtOnce}
                 onChange={(e) =>{
                   socketContext.setCurrentNumOfBalloonsAtOnce(e)
                 }}
@@ -199,10 +200,10 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
                     marginLeft:'75px',
                   }}>
                     <span>Hand:</span>
-                    <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Select which hand(s) are able to score points" placement="topLeft"  mouseLeaveDelay={0}>
+                    <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Select which hand(s) are able to score points" placement="topLeft">
                       <Select
                         style={{ width: 150, marginRight: 10 }}
-                        defaultValue={"2"}
+                        defaultValue={socketContext.currentValidHand}
                         onChange={(e) =>{
                           socketContext.setCurrentValidHand(e);
                         }
@@ -234,11 +235,13 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
             <Tooltip color={"rgba(14,118,254,1)"}  mouseLeaveDelay={0}  title="Time in seconds between each spawn" placement='topLeft'>
               <Select
                 style={{ width: 150, marginRight: 10 }}
-                defaultValue={"1.00"}
+                defaultValue={socketContext.currentTimeBetweenSpawns}
                 onChange={(e) =>{
                   socketContext.setCurrentTimeBetweenSpawns(e)
                 }}
               >
+                <Option value="1.00">1.00</Option>
+                <Option value="1.25">1.25</Option>
                 <Option value="1.50">1.50</Option>
                 <Option value="2.00">2.00</Option>
                 <Option value="2.50">2.50</Option>
@@ -261,7 +264,7 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
                      <Tooltip color={"rgba(14,118,254,1)"}  mouseLeaveDelay={0} title="How many special balloons to spawn" placement='topLeft'>
                        <Select
                          style={{ width: 150, marginRight: 10 }}
-                         defaultValue={"Low"}
+                         defaultValue={socketContext.currentBalloonPowerupFreq}
                          onChange={(e) =>{
                           socketContext.setCurrentPowerupFreq(e);
                          }
@@ -294,7 +297,7 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
             <Tooltip color={"rgba(14,118,254,1)"}  mouseLeaveDelay={0}  title="Set how many points need to be scored to win" placement='topLeft'>
               <Select
                 style={{ width: 150, marginRight: 10 }}
-                defaultValue={"10"}
+                defaultValue={socketContext.currentBalloonTarget}
                 onChange={(e) =>{
                   socketContext.setCurrentBalloonTarget(e)
                 }}
@@ -302,6 +305,7 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
                 <Option value="5">5</Option>
                 <Option value="10">10</Option>
                 <Option value="15">15</Option>
+                <Option value="15">20</Option>
               </Select>
             </Tooltip>
           </Col>
@@ -317,7 +321,7 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
           <Tooltip color={"rgba(14,118,254,1)"}  mouseLeaveDelay={0} title="How many balloons can the player miss before losing" placement='topLeft'>
             <Select
               style={{ width: 150, marginRight: 10 }}
-              defaultValue={"5"}
+              defaultValue={socketContext.currentMaxLives}
               onChange={(e) =>{
                 socketContext.setCurrentMaxLives(e);
               }

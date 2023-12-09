@@ -72,7 +72,8 @@ export const UserProvider = (props: { children: ReactElement }) => {
     cb();
   };
   const logout = () => {
-    axiosContext
+    if(currentUser){
+      axiosContext
       .logout(currentUser)
       .then((result: any) => {
         window.localStorage.removeItem('token');
@@ -83,6 +84,7 @@ export const UserProvider = (props: { children: ReactElement }) => {
         return result;
       })
       .catch((err: any) => message.error(err));
+    }
   };
 
   return (

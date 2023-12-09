@@ -41,13 +41,13 @@ export const BalloonSettings: FC<IBalloonSettingsPage> = ({
             <Tooltip  color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Career - Progress through 5 levels!    Custom - Create your own custom rules!" placement="topLeft">
               <Select
                 style={{ width: 150, marginRight: 10 }}
-                defaultValue={"1"}
+                defaultValue={socketContext.currentBalloonGameMode}
                 onChange={(e) =>{
                   if(e=="0"){
                     setShowCareerMode(true);
 
                   }
-                  if(e =="1"){
+                  if(e =="1" || e =="2"){
                     setShowCareerMode(false);
                   }
                   socketContext.setCurrentBalloonGameMode(e)
@@ -76,7 +76,7 @@ export const BalloonSettings: FC<IBalloonSettingsPage> = ({
             <Tooltip  color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Select what the scene should look like. A normal looking room or a meadow" placement="topLeft">
               <Select
                 style={{ width: 150, marginRight: 10 }}
-                defaultValue={"1"}
+                defaultValue={sessionContext.currentScenery}
                 onChange={(e) =>{
                   sessionContext.setCurrentScenery(e)
                 }
