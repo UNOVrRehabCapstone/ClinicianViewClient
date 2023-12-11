@@ -70,7 +70,6 @@ export const SessionProvider = (props: { children: ReactElement }) => {
 
   const [showBalloonSettings, setShowBalloonSettings] = useState(false);
 
-
   let tempBalloonInfo = {
     achievementProgress: "0000000000",
     careerProgress: "0",
@@ -113,11 +112,23 @@ export const SessionProvider = (props: { children: ReactElement }) => {
 
 
 
+
+
+
+
+
   useEffect(() => {
     if (!socket.connected) {
       setCurrentSession(undefined);
     }
   }, [socket.connected]);
+
+
+  useEffect(() => {
+
+  }, [currentGame,currentScenery]);
+
+
 
   const updateSessionList = () => {
     setSessionListLoading(true);
@@ -185,7 +196,6 @@ export const SessionProvider = (props: { children: ReactElement }) => {
   };
 
   const clinicianJoin = (session: ISession) => {
-    if(session.sessionKey && auth.currentUser){
       axiosContext
       .joinSession(session.sessionKey, auth.currentUser?.username)
       .then((res: any) => {
@@ -196,7 +206,6 @@ export const SessionProvider = (props: { children: ReactElement }) => {
         return res;
       })
       .catch((err: any) => message.error(err));
-    }
 
   };
 
@@ -232,7 +241,6 @@ export const SessionProvider = (props: { children: ReactElement }) => {
   };
 
   const deletePatientFromSession = (patientIn: string) => {
-    if(currentSession?.sessionKey){
       axiosContext
       .removePatientFromSession(patientIn, currentSession?.sessionKey)
       .then(() => message.success(`Patient ${patientIn} removed from session`))
@@ -243,12 +251,10 @@ export const SessionProvider = (props: { children: ReactElement }) => {
       return null;
     });
     setPatientList([]);
-    }
 
   };
 
   const addClientsToSession = (clientList: string[], sessionKey: string) => {
-    if(socket.socket && auth.currentUser){
       axiosContext
       .addClientsToSession(
         clientList,
@@ -260,7 +266,6 @@ export const SessionProvider = (props: { children: ReactElement }) => {
         return res;
       })
       .catch((err: any) => message.error(err));
-    }
   };
 
   const getPatientsInSession = (sessionKey: string) => {
@@ -277,14 +282,12 @@ export const SessionProvider = (props: { children: ReactElement }) => {
   };
 
   const startGame = async (sessionKey: string, patientId?: string) => {
-    if(auth.currentUser && patientId){
       axiosContext
       .startGame(sessionKey, currentGame, auth.currentUser?.username, patientId, currentScenery)
       .then((res: any) => {
         return res;
       })
       .catch((err: any) => message.error(err));
-    }
   };
 
   const loadPatientBalloonGameData = async( userName: string) => {

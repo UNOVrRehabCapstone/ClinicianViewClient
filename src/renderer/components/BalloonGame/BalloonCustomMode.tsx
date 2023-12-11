@@ -9,11 +9,12 @@ import { IBalloonSettingsPage } from "./BalloonGameSettings";
 export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
   patient
 }) =>{
+
     const sessionContext = useSessionContext();
     const socketContext = useSocketContext();
     const { Option } = Select;
     const [showBalloonSpawner, setShowBalloonSpawner]=useState(false);
-    const [disableBalloonRatioSlider, setDisableBalloonRatioSlider] = useState((socketContext.currentSpawnPattern == "2"));
+    const [showBalloonRatioSlider, setShowBalloonRatioSlider] = useState((socketContext.currentSpawnPattern == "2"));
 
     
     const marks: SliderMarks = {
@@ -124,10 +125,10 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
                 onChange={(e) =>{
                   
                   if(e == "2"){
-                    setDisableBalloonRatioSlider(false)
+                    setShowBalloonRatioSlider(true)
                   }
                   else{
-                    setDisableBalloonRatioSlider(true)
+                    setShowBalloonRatioSlider(false)
                   }
                   socketContext.setCurrentSpawnPattern(e)
                   console.log(socketContext.currentSpawnPattern == "2");
@@ -147,7 +148,7 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
                 marginLeft:'75px',
                 width: "270px"
               }}>
-                <Slider disabled={disableBalloonRatioSlider} style={
+                <Slider disabled={!showBalloonRatioSlider} style={
                     {width:"270px"}}
                     trackStyle={{background:"rgba(14,118,254,1)"}}
                     tooltip={{formatter}}

@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { ISession } from '../../interfaces/Session';
 import PatientCard from '../../components/PatientCard';
 import { useSessionContext } from '../../context/SessionContext';
+import { BalloonSettings } from 'renderer/components/BalloonGame/BalloonGameSettings';
 
 const { Option } = Select;
 
@@ -217,9 +218,13 @@ export const SessionScreen: FC<ISessionScreen> = ({
             />
           )}
         />
-              
       </Row>
-
+      {sessionContext.showBalloonSettings ? (<div>
+        <Divider orientation='center' style={{border:'10px'}} >
+          Balloon Game
+        </Divider>
+        <BalloonSettings patient={sessionContext.patientList[0]}/>
+        </div>) : (<div></div>)}
 
 
 

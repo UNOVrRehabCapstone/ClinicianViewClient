@@ -328,13 +328,6 @@ export const PatientCard: FC<IPatientCard> = ({
         </Col>
       </Row>
     </List.Item>
-
-    {sessionContext.showBalloonSettings ? (<div>
-        <Divider orientation='center' style={{border:'10px'}} >
-          Balloon Game
-        </Divider>
-        <BalloonSettings patient={patient}/>
-        </div>) : (<div></div>)}
     </div>
 
 
