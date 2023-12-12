@@ -17,12 +17,44 @@ import { BalloonProgress } from 'renderer/interfaces/PatientInfo';
 //const SERVER_IP = 'http://137.48.186.67:5000';
 
 // Local
- const SERVER_IP = 'http://localhost:5000';
+ //const SERVER_IP = 'http://localhost:5000';
 
  // AWS lightsail instance
- //const SERVER_IP = 'http://35.182.185.82:5000';
+ const SERVER_IP = 'http://15.157.73.210:5000';
 
- 
+
+ export interface IBalloonSettings{
+  mode: string,
+  target: string,
+  freq: string,
+  ratio: string,
+  pattern: string,
+  lives: string,
+  hand: string
+  level: string;
+  modifier: string;
+  numBalloonsSpawnedAtOnce: string;
+  timeBetweenSpawns: string;
+}
+
+export class BalloonSettingsStatic{
+  static balloonSettings: IBalloonSettings = {
+    mode: "1",
+    target: "10",
+    freq: "Low",
+    ratio: "0.5",
+    pattern: "1",
+    lives: "5",
+    hand: "2",
+    level: "0",
+    modifier: "1.00",
+    numBalloonsSpawnedAtOnce: "2",
+    timeBetweenSpawns: "2.5"
+  }
+
+}
+
+
 export interface ISocketContext {
   sendMessage: (messageId: string, object: any) => void;
   connected: boolean;
@@ -48,47 +80,45 @@ export interface ISocketContext {
     scaleAmount: number
   ) => void;
 
-  setCurrentBalloonGameMode: (mode: string) => void;
-  setCurrentBalloonTarget: (target: string) => void;
-  setCurrentPowerupFreq: (freq: string) => void;
-  setCurrentLeftRightRatio: (ratio: string) => void;
-  setCurrentSpawnPattern: (pattern: string) => void;
-  setCurrentMaxLives: (lives: string) => void;
-  setCurrentValidHand: (hand: string) => void;
-  setCareerModeLevelToPlay: (level: string) => void;
-  setCurrentBalloonSpeedModifier:(modifier: string) => void;
   manuallySpawnBalloon: (patient: IPatient) => void;
   sendBalloonGameSettings: (patient: IPatient) => void;
-  setCurrentNumOfBalloonsAtOnce:(maxAtOnce: string) => void;
-  setCurrentTimeBetweenSpawns:(timeBetween: string) => void;
   moveDart:(patient: IPatient, isUp: boolean) => void;
+  setStartGame:(start: boolean) => void;
+  setShowBalloonSpawner:(show: boolean) => void;
+  showBalloonSpawner: boolean;
+  isManual: boolean,
+  setIsManual:(isManual: boolean) => void;
+  spawnMethod: string;
+  setSpawnMethod:(method: string) => void;
+  setMode:(mode: string) => void;
+  setTarget:(target: string) => void;
+  setFreq:(freq: string) => void;
+  setRatio:(ratio: string) => void;
+  setPattern:(pattern: string) => void;
+  setLives:(lives: string) =>void;
+  setHand:(hand: string) => void;
+  setModifier:(modifier: string) => void;
+  setNumOfBalloonsSpawnedAtOnce:(num: string) => void;
+  setTimeBetweenSpawns:(time: string) => void;
+  modeState: string;
+  targetState: string;
+  freqState: string;
+  ratioState: string;
+  patternState: string;
+  livesState: string;
+  handState: string;
+  modifierState: string;
+  numOfBalloonsSpawnedAtOnceState: string;
+  timeBetweenSpawnsState: string;
+  gameIsRunning: boolean;
+  setGameIsRunning:(running: boolean) => void;
 
-  currentBalloonGameMode: string;
-  currentBalloonTarget: string
-  currentBalloonPowerupFreq: string
-  currentLeftRightRatio: string
-  currentSpawnPattern: string
-  currentMaxLives: string
-  currentValidHand: string
-  currentBalloonSpeedModifier: string
-  currentNumOfBalloonsAtOnce: string
-  currentTimeBetweenSpawns: string
 }
 
 
-export interface IBalloonSettings{
-    mode: string,
-    target: string,
-    freq: string,
-    ratio: string,
-    pattern: string,
-    lives: string,
-    hand: string
-    level: string;
-    modifier: string;
-    numBalloonsSpawnedAtOnce: string;
-    timeBetweenSpawns: string;
-}
+
+
+
 const SocketContext = React.createContext<ISocketContext>({} as ISocketContext);
 
 export const SocketProvider = (props: { children: ReactElement }) => {
@@ -107,21 +137,23 @@ export const SocketProvider = (props: { children: ReactElement }) => {
   const [positionHead, setPositionHead] = useState<string[]>([]);
   const [lastLeftRep, setLastLeftRep] = useState<string>('');
   const [lastRightRep, setLastRightRep] = useState<string>('');
+  const [showBalloonSpawner, setShowBalloonSpawner] = useState(false);
+  const [isManual, setIsManual] = useState(false);
+  const [spawnMethod, setSpawnMethod] = useState("1");
+  const [modeState, setMode] = useState("1");
+  const [targetState, setTarget] = useState("10");
+  const [freqState, setFreq] = useState("Low");
+  const [ratioState, setRatio] = useState("pattern");
+  const [patternState, setPattern] = useState("1");
+  const [livesState, setLives] = useState("5");
+  const [handState, setHand] = useState("2");
+  const [modifierState, setModifier] = useState("1.00");
+  const [numOfBalloonsSpawnedAtOnceState, setNumOfBalloonsSpawnedAtOnce] = useState("2");
+  const [timeBetweenSpawnsState, setTimeBetweenSpawns] = useState("2.5");
+  const [gameIsRunning, setGameIsRunning] = useState(false);
 
+  const [startGame, setStartGame] = useState(false);
   
-  const [careerModeLevelToPlay, setCareerModeLevelToPlay] = useState("0");
-  const [currentBalloonGameMode, setCurrentBalloonGameMode] = useState('1');
-  const [currentBalloonTarget, setCurrentBalloonTarget] = useState('10');
-  const [currentBalloonPowerupFreq, setCurrentPowerupFreq] = useState('Low');
-  const [currentLeftRightRatio, setCurrentLeftRightRatio] = useState('0.5');
-  const [currentSpawnPattern, setCurrentSpawnPattern] = useState('1');
-  const [currentMaxLives, setCurrentMaxLives] = useState('5');
-  const [currentValidHand, setCurrentValidHand] = useState('2');
-  const [currentBalloonSpeedModifier, setCurrentBalloonSpeedModifier] = useState('1.00');
-  const [currentNumOfBalloonsAtOnce, setCurrentNumOfBalloonsAtOnce] = useState('2');
-  const [currentTimeBetweenSpawns, setCurrentTimeBetweenSpawns] = useState('2.5');
-
-
 
   const handleServerEvents = (newSocket: Socket) => {
     newSocket.on('connect', () => {
@@ -132,6 +164,10 @@ export const SocketProvider = (props: { children: ReactElement }) => {
     newSocket.on('balloonProgressionUpdate', (data: string) => {
       console.log("Data");
       console.log("progress");
+    })
+    newSocket.on("clientGameEnded",() =>{
+      setGameIsRunning(false);
+      console.log("gameEnded");
     })
     newSocket.on('userJoined', () => {});
     newSocket.on('positionalDataClinician', (data: string) => {
@@ -179,12 +215,7 @@ export const SocketProvider = (props: { children: ReactElement }) => {
   }, [setSocket]);
 
 
-  useEffect(() => {
-    console.log("here");
-  }, [currentSpawnPattern, careerModeLevelToPlay, currentBalloonGameMode,
-      currentBalloonTarget,currentBalloonPowerupFreq,currentLeftRightRatio,
-      currentMaxLives,currentValidHand,currentBalloonSpeedModifier,currentNumOfBalloonsAtOnce,
-      currentTimeBetweenSpawns]);
+
 
 
   const sendMessage = (messageId: string, object: any) => {
@@ -226,19 +257,8 @@ export const SocketProvider = (props: { children: ReactElement }) => {
   };
   const sendBalloonGameSettings = (patient: IPatient) => {
     //If the game is the balloon game, update balloon settings
-    let balloonSettings: IBalloonSettings = {
-      mode: currentBalloonGameMode,
-      target: currentBalloonTarget,
-      freq: currentBalloonPowerupFreq,
-      ratio: currentLeftRightRatio,
-      pattern: currentSpawnPattern,
-      lives: currentMaxLives,
-      hand: currentValidHand,
-      level: careerModeLevelToPlay,
-      modifier: currentBalloonSpeedModifier,
-      numBalloonsSpawnedAtOnce: currentNumOfBalloonsAtOnce,
-      timeBetweenSpawns: currentTimeBetweenSpawns
-    }
+    console.log("SENDING: " + BalloonSettingsStatic.balloonSettings.timeBetweenSpawns)
+    let balloonSettings:IBalloonSettings = BalloonSettingsStatic.balloonSettings;
     if(socket){
       socket.emit("balloonSettings",{...patient, balloonSettings})
     }
@@ -314,30 +334,38 @@ export const SocketProvider = (props: { children: ReactElement }) => {
         showIKSkeleton,
         handScale,
         testSocket,
-        setCurrentBalloonGameMode,
-        setCurrentPowerupFreq,
-        setCurrentBalloonTarget,
-        setCurrentLeftRightRatio,
-        setCurrentSpawnPattern,
-        setCurrentMaxLives,
-        setCurrentValidHand,
         manuallySpawnBalloon,
         sendBalloonGameSettings,
-        setCurrentBalloonSpeedModifier,
-        currentBalloonGameMode,
-        currentBalloonPowerupFreq,
-        currentBalloonSpeedModifier,
-        currentBalloonTarget,
-        currentMaxLives,
-        currentLeftRightRatio,
-        currentNumOfBalloonsAtOnce,
-        currentSpawnPattern,
-        currentTimeBetweenSpawns,
-        currentValidHand,
-        setCareerModeLevelToPlay,
-        setCurrentNumOfBalloonsAtOnce,
-        setCurrentTimeBetweenSpawns,
-        moveDart
+        setStartGame,
+        moveDart,
+        setShowBalloonSpawner,
+        showBalloonSpawner,
+        isManual,
+        setIsManual,
+        spawnMethod,
+        setSpawnMethod,
+        setFreq,
+        setTarget,
+        setHand,
+        setNumOfBalloonsSpawnedAtOnce,
+        setTimeBetweenSpawns,
+        setMode,
+        setRatio,
+        setPattern,
+        setLives,
+        setModifier,
+        modeState,
+        targetState,
+        freqState,
+        ratioState,
+        patternState,
+        livesState,
+        handState,
+        modifierState,
+        numOfBalloonsSpawnedAtOnceState,
+        timeBetweenSpawnsState,
+        gameIsRunning,
+        setGameIsRunning,
       }}
     >
       {children}

@@ -112,11 +112,6 @@ export const SessionProvider = (props: { children: ReactElement }) => {
 
 
 
-
-
-
-
-
   useEffect(() => {
     if (!socket.connected) {
       setCurrentSession(undefined);

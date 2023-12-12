@@ -2,7 +2,7 @@ import { Button, Checkbox, Col, Divider, Input, Modal, Row, Tooltip } from "antd
 import { FC, useState } from "react";
 import { useSessionContext } from "renderer/context/SessionContext";
 import { IBalloonSettingsPage } from "./BalloonGameSettings";
-import { useSocketContext } from "renderer/context/SocketContext";
+import { BalloonSettingsStatic, useSocketContext } from "renderer/context/SocketContext";
 
 export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
   patient
@@ -10,8 +10,11 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
 
   const socketContext = useSocketContext();
 
+
   const startCareerLevel = async (level: string) =>{
-       await socketContext.setCareerModeLevelToPlay(level);
+    BalloonSettingsStatic.balloonSettings.level = level;
+    socketContext.setHand("2");
+    BalloonSettingsStatic.balloonSettings.hand = "2";
       await sessionContext.startGame(sessionContext.currentSession?.sessionKey)
    //  sessionContext.sendBalloonGameSettings(sessionContext.currentSession?.sessionKey)
       socketContext.sendBalloonGameSettings(patient);
