@@ -75,7 +75,7 @@ export const PatientCard: FC<IPatientCard> = ({
 
 
   const onPatientNameChange = () => {
-    console.log(patientName);
+
 
     if(sessionContext.patientList[0]){
       socketContext.loadPatientBalloonGameData(patientName)

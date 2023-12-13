@@ -60,7 +60,6 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
               style={{ width: 150, marginRight: 10 }}
               defaultValue={socketContext.targetState}
               onChange={(e) =>{
-                console.log(socketContext.isManual)
                 BalloonSettingsStatic.balloonSettings.target = e
                 socketContext.setTarget(e);
               }}

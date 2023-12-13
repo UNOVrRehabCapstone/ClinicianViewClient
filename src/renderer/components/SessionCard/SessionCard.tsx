@@ -56,7 +56,13 @@ export const SessionCard: FC<ISessionCard> = ({ session }: ISessionCard) => {
             <Button
               danger
               style={{ marginLeft: 10 }}
-              onClick={() => sessionContext.removeSession(session.sessionKey)}
+              onClick={() => {
+                if(sessionContext.patientList.length > 0){
+                  sessionContext.deletePatientFromSession(sessionContext.patientList[0].name)
+                }
+                sessionContext.removeSession(session.sessionKey)
+              }
+              }
               icon={<DeleteOutlined />}
             />
           </Tooltip>

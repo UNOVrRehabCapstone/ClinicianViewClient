@@ -18,10 +18,10 @@ import AxiosContext, { useAxiosContext } from './AxiosContext';
 //const SERVER_IP = 'http://137.48.186.67:5000';
 
 // Local
- const SERVER_IP = 'http://localhost:5000';
+ //const SERVER_IP = 'http://localhost:5000';
 
  // AWS lightsail instance
-// const SERVER_IP = 'http://15.157.73.210:5000';
+ const SERVER_IP = 'http://15.157.73.210:5000';
 
 
  export interface IBalloonSettings{
@@ -58,8 +58,6 @@ export class BalloonSettingsStatic{
 
 export class StaticBallooonProgress{
   static balloonInfo: BalloonProgress = {
-    achievementProgress: "0000000000",
-    careerProgress: "0",
     levelOneScore: "0",
     levelTwoScore: "0",
     levelThreeScore: "0",
@@ -188,9 +186,6 @@ export const SocketProvider = (props: { children: ReactElement }) => {
   const loadPatientBalloonGameData = async( userName: string) => {
     let newData: BalloonProgress
     let res = await axiosContext.loadPatientBalloonData(userName)
-      console.log("Loading Patient Data:" + userName);
-      console.log(res.data.ach0);
-      console.log(res.data.ach3);
       newData = {
           levelOneScore: res.data.levelOneScore,
           levelTwoScore: res.data.levelTwoScore,
@@ -220,13 +215,11 @@ export const SocketProvider = (props: { children: ReactElement }) => {
 
 
     newSocket.on("balloonProgressionUpdate",(payload: string) => {
-      console.log(payload);
       loadPatientBalloonGameData(payload);
 
     });
     newSocket.on("clientGameEnded",() =>{
       setGameIsRunning(false);
-      console.log("gameEnded");
 
 
     })
@@ -343,7 +336,6 @@ export const SocketProvider = (props: { children: ReactElement }) => {
   };
 
   const moveDart = (patient: IPatient, isUp: boolean) =>{
-    console.log( isUp)
     if(socket){
       if(isUp){
         socket.emit("moveDartUp", patient);
