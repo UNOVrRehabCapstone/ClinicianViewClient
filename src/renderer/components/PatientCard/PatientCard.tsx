@@ -216,6 +216,7 @@ export const PatientCard: FC<IPatientCard> = ({
           {patientName}
           <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Change patient game profile" placement="top">
             <Button
+              disabled={true == true}
               style={{ margin: '0 2rem' }}
               icon={<EnterOutlined />}
               onClick={() =>
