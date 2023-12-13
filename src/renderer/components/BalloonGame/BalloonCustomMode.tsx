@@ -130,21 +130,6 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
                        </Select>
                      </Tooltip>
                    </Col>
-          <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "270px",
-            marginLeft:'75px',
-            }}>
-          <span>Adjust Darts: </span>
-            <Tooltip  color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Move the darts higher / lower" placement="topLeft">
-              <Button style={{width: "150px"}} disabled={!socketContext.gameIsRunning} type="primary" onClick={() => {setShowDartAdjustModal(true)}}>
-                Click to Adjust
-                </Button>     
-            </Tooltip>
-        </Col>
       </Row>
         
        
@@ -344,7 +329,6 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
                       }}></Slider> 
              </Col>
        </Row> 
-       {socketContext.modeState == "2" ? (
          <Row
          style={{
            display: 'flex',
@@ -352,63 +336,75 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
            justifyContent: 'flex-start',
            height: '10%'
            }}>
-           <Col
-             style={{
-               display: 'flex',
-               justifyContent: 'space-between',
-               alignItems: 'center',
-               width: "280px"
-             }}>
-               <Tooltip color={"rgba(64,168,254,1"} mouseLeaveDelay={0} title="Click to spawn a balloon. Make sure to start the game first using the button below!">
-                   <Button type="primary"  style={{width: "290px"}} disabled={!socketContext.gameIsRunning} onClick={() =>{socketContext.manuallySpawnBalloon(patient)}}>
-                       Spawn Balloon
-                   </Button>
-               </Tooltip>
-
-           </Col>
-       </Row>
-       ) : (<div></div>)}
-
-        {!socketContext.gameIsRunning? (
-                    <Row
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'flex-start',
-                      padding: '10px',
-                      height: '10%'
-                    }}>
-                    <Col>
-                    <Tooltip color={"rgba(14,118,254,1)"}  title="Begin a custom game with the above settings" mouseLeaveDelay={0}>
-                    <Button style={{width:"280px"}}type="primary" onClick={() =>{
-                      sessionContext.startGame(sessionContext.currentSession?.sessionKey)
-                      socketContext.sendBalloonGameSettings(patient);
-                      socketContext.setGameIsRunning(true);
-                    }}>Begin Custom Game</Button>
-                    </Tooltip>
-                    </Col>
-                    
-                  </Row>
-
-        ) : (
-            <Row
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              padding: '10px',
-              height: '10%'
+         <Col
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "270px",
             }}>
-            <Col>
-            <Tooltip color={"rgba(14,118,254,1)"}  title="Stop the game" mouseLeaveDelay={0}>
+          <span>Adjust Darts: </span>
+            <Tooltip  color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Move the darts higher / lower" placement="topLeft">
+              <Button style={{width: "150px"}} disabled={!socketContext.gameIsRunning} type="primary" onClick={() => {setShowDartAdjustModal(true)}}>
+                Click to Adjust
+                </Button>     
+            </Tooltip>
+          </Col>
+          <Col style={{
+           display: 'flex',
+           justifyContent: 'space-between',
+           alignItems: 'center',
+           width: "280px",
+           marginLeft: "75px",
+          }}>
+           <Tooltip color={"rgba(64,168,254,1"} mouseLeaveDelay={0} title="Click to spawn a balloon. Make sure to start the game first using the button below!">
+             <Button type="primary"  style={{width: "290px"}} disabled={!socketContext.gameIsRunning || socketContext.modeState !="2"} onClick={() =>{socketContext.manuallySpawnBalloon(patient)}}>
+                Spawn Balloon
+              </Button>
+           </Tooltip>
+          </Col>
+       </Row>
+       <Row
+         style={{
+           display: 'flex',
+           justifyContent: 'flex-start',
+           padding: '10px',
+           height: "10%",
+          }}>
+
+          {!socketContext.gameIsRunning? (
+            <Col style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: "280px",
+            }}>
+            <Tooltip color={"rgba(14,118,254,1)"}  title="Begin a custom game with the above settings" mouseLeaveDelay={0}>
             <Button style={{width:"280px"}}type="primary" onClick={() =>{
-                socketContext.setGameIsRunning(false);
-                sessionContext.startGame(sessionContext.currentSession?.sessionKey);
-            }}>Stop Game</Button>
+              sessionContext.startGame(sessionContext.currentSession?.sessionKey)
+              socketContext.sendBalloonGameSettings(patient);
+              socketContext.setGameIsRunning(true);
+            }}>Begin Custom Game</Button>
             </Tooltip>
             </Col>
-            
-          </Row>
-
-        )}
+ 
+ 
+            ) : (
+              <Col style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: "280px",
+              }}>
+                <Tooltip color={"rgba(14,118,254,1)"}  title="Stop the game" mouseLeaveDelay={0}>
+                <Button style={{width:"280px"}}type="primary" onClick={() =>{
+                    socketContext.setGameIsRunning(false);
+                    sessionContext.startGame(sessionContext.currentSession?.sessionKey);
+                }}>Stop Game</Button>
+                </Tooltip>
+                </Col>
+             )}
+       </Row>
       <Modal
         open={showDartAdjustModal}
         onCancel={() => setShowDartAdjustModal(false)}
@@ -429,3 +425,4 @@ export const BalloonCustomMode: FC<IBalloonSettingsPage>= ({
 
     </div>)
 }
+

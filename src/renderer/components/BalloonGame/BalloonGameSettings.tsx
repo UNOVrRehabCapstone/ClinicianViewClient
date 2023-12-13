@@ -41,7 +41,7 @@ export const BalloonSettings: FC<IBalloonSettingsPage> = ({
             <Tooltip  color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Career - Progress through 5 levels!    Custom - Create your own custom rules!" placement="topLeft">
               <Select
                 style={{ width: 150, marginRight: 10 }}
-                defaultValue={BalloonSettingsStatic.balloonSettings.mode}
+                defaultValue={socketContext.modeState}
                 disabled={socketContext.gameIsRunning}
                 onChange={(e) =>{
                   if(e=="0"){

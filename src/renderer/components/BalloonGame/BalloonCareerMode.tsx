@@ -1,6 +1,7 @@
 import { Button, Checkbox, Col, Divider, Input, Modal, Row, Tooltip } from "antd";
 import { FC, useState } from "react";
 import { useSessionContext } from "renderer/context/SessionContext";
+import {StaticBallooonProgress} from "renderer/context/SocketContext";
 import { IBalloonSettingsPage } from "./BalloonGameSettings";
 import { BalloonSettingsStatic, useSocketContext } from "renderer/context/SocketContext";
 
@@ -14,6 +15,7 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
   const startCareerLevel = async (level: string) =>{
     BalloonSettingsStatic.balloonSettings.level = level;
     socketContext.setHand("2");
+    socketContext.setGameIsRunning(true);
     BalloonSettingsStatic.balloonSettings.hand = "2";
       await sessionContext.startGame(sessionContext.currentSession?.sessionKey)
    //  sessionContext.sendBalloonGameSettings(sessionContext.currentSession?.sessionKey)
@@ -26,26 +28,6 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
               <Divider orientation='center'  style={{border:'10px'}} >
           Career Mode
         </Divider>
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-          }}>
-        <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-            }}>
-          <span>Current Level: </span>
-          <span>{sessionContext.balloonInfo.careerProgress}</span>
-            <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Load a patient's game data" placement="topLeft">
-            </Tooltip>
-        </Col>
-      </Row>
       <Row
         style={{
           display: 'flex',
@@ -94,7 +76,7 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             width: "280px"
             }}>
           <span>Level One: </span>
-          <span>{sessionContext.balloonInfo.levelOneScore} / 3</span>
+          <span>{socketContext.balloonInfo.levelOneScore} / 3</span>
           <Button onClick={ () =>{
             startCareerLevel("0");
           }
@@ -121,7 +103,7 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             justifyContent: 'space-between',
             alignItems: 'center',
             }}>
-              <Checkbox disabled checked={sessionContext.achievementsList[0]}></Checkbox>
+              <Checkbox disabled checked={StaticBallooonProgress.balloonInfo.ach0}></Checkbox>
         </Col>
         <Col
           style={{
@@ -142,7 +124,7 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             justifyContent: 'space-between',
             alignItems: 'center',
             }}>
-              <Checkbox disabled checked={sessionContext.achievementsList[5]}></Checkbox>
+              <Checkbox disabled checked={StaticBallooonProgress.balloonInfo.ach5}></Checkbox>
         </Col>
       </Row>
       <Row
@@ -160,7 +142,7 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             width: "280px"
             }}>
           <span>Level Two: </span>
-          <span>{sessionContext.balloonInfo.levelTwoScore} / 3</span>
+          <span>{socketContext.balloonInfo.levelTwoScore} / 3</span>
           <Button onClick={ () =>{
             startCareerLevel("1");
           }
@@ -185,7 +167,7 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             justifyContent: 'space-between',
             alignItems: 'center',
             }}>
-              <Checkbox disabled checked={sessionContext.achievementsList[1]}></Checkbox>
+              <Checkbox disabled checked={StaticBallooonProgress.balloonInfo.ach1}></Checkbox>
         </Col>
         <Col
           style={{
@@ -206,7 +188,7 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             justifyContent: 'space-between',
             alignItems: 'center',
             }}>
-              <Checkbox disabled checked={sessionContext.achievementsList[6]}></Checkbox>
+              <Checkbox disabled checked={StaticBallooonProgress.balloonInfo.ach6}></Checkbox>
         </Col>
       </Row>
       <Row
@@ -221,10 +203,10 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            width: "280px"
+            width: "280px",
             }}>
           <span>Level Three:</span>
-          <span>{sessionContext.balloonInfo.levelThreeScore} / 3</span>
+          <span>{socketContext.balloonInfo.levelThreeScore} / 3</span>
           <Button onClick={ () =>{
             startCareerLevel("2");
           }
@@ -253,7 +235,7 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             alignItems: 'center',
             }}>
               
-              <Checkbox disabled checked={sessionContext.achievementsList[2]}></Checkbox>
+              <Checkbox disabled checked={StaticBallooonProgress.balloonInfo.ach2}></Checkbox>
 
         </Col>
         <Col
@@ -275,7 +257,7 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             justifyContent: 'space-between',
             alignItems: 'center',
             }}>
-              <Checkbox disabled checked={sessionContext.achievementsList[7]}></Checkbox>
+              <Checkbox disabled checked={StaticBallooonProgress.balloonInfo.ach7}></Checkbox>
         </Col>
       </Row>
       <Row
@@ -293,7 +275,7 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             width: "280px"
             }}>
           <span>Level Four: </span>
-          <span>{sessionContext.balloonInfo.levelFourScore} / 3</span>
+          <span>{socketContext.balloonInfo.levelFourScore} / 3</span>
           <Button onClick={ () =>{
             startCareerLevel("3");
           }
@@ -321,7 +303,7 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             justifyContent: 'space-between',
             alignItems: 'center',
             }}>
-              <Checkbox disabled checked={sessionContext.achievementsList[3]}></Checkbox>
+              <Checkbox disabled checked={StaticBallooonProgress.balloonInfo.ach3}></Checkbox>
         </Col>
         <Col
           style={{
@@ -342,7 +324,7 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             justifyContent: 'space-between',
             alignItems: 'center',
             }}>
-              <Checkbox disabled checked={sessionContext.achievementsList[8]}></Checkbox>
+              <Checkbox disabled checked={StaticBallooonProgress.balloonInfo.ach8}></Checkbox>
         </Col>
       </Row>
       <Row
@@ -360,7 +342,7 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             width: "280px"
             }}>
           <span>Level Five: </span>
-          <span>{sessionContext.balloonInfo.levelFiveScore} / 3</span>
+          <span>{socketContext.balloonInfo.levelFiveScore} / 3</span>
           <Button onClick={ () =>{
             startCareerLevel("4");
           }
@@ -387,7 +369,7 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             justifyContent: 'space-between',
             alignItems: 'center',
             }}>
-              <Checkbox disabled checked={sessionContext.achievementsList[4]}></Checkbox>
+              <Checkbox disabled checked={StaticBallooonProgress.balloonInfo.ach4}></Checkbox>
         </Col>
         <Col
           style={{
@@ -408,28 +390,9 @@ export const BalloonCareerMode: FC<IBalloonSettingsPage> = ({
             justifyContent: 'space-between',
             alignItems: 'center',
             }}>
-              <Checkbox disabled checked={sessionContext.achievementsList[9]}></Checkbox>
+              <Checkbox disabled checked={StaticBallooonProgress.balloonInfo.ach9}></Checkbox>
         </Col>
       </Row>
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          padding: '10px',
-          height: '10%'
-          }}>
-        <Col
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: "280px"
-            }}>
-          <span>Achievement String: </span>
-          <span>{sessionContext.balloonInfo.achievementProgress}</span>
-        </Col>
-      </Row>
-
       </div>
       )
 }

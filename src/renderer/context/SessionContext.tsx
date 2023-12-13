@@ -7,6 +7,9 @@ import { useAxiosContext } from './AxiosContext';
 import { useSocketContext } from './SocketContext';
 import { BalloonProgress, IPatientInfo } from '../interfaces/PatientInfo';
 
+
+
+
 export interface ISessionContext {
   sessionList: ISession[];
   sessionListLoading: boolean;
@@ -23,7 +26,6 @@ export interface ISessionContext {
   addClientsToSession: (clientList: string[], sessionKey: string) => void;
   clientListLoading: boolean;
   getPatientsInSession: (sessionKey: string) => Promise<any>;
-  loadPatientBalloonGameData:(name: string) => Promise<any>;
   patientList: IPatient[];
   startGame: (sessionKey: string, patientId?: string) => Promise<any>;
   getCurrentGame: () => string;
@@ -38,12 +40,7 @@ export interface ISessionContext {
   ) => void;
   updatePatientInfo: (values: IPatientInfo) => Promise<void>;
   getPatient: (patientID: string, patientName: string) => Promise<any>;
-  achievementsList: boolean[];
-  setBalloonInfo:(progress: BalloonProgress) => void;
-  
   setCurrentScenery:(scenery: string) => void;
-
-  balloonInfo: BalloonProgress;
 }
 
 
@@ -70,41 +67,9 @@ export const SessionProvider = (props: { children: ReactElement }) => {
 
   const [showBalloonSettings, setShowBalloonSettings] = useState(false);
 
-  let tempBalloonInfo = {
-    achievementProgress: "0000000000",
-    careerProgress: "0",
-    levelOneScore: "0",
-    levelTwoScore: "0",
-    levelThreeScore: "0",
-    levelFourScore: "0",
-    levelFiveScore: "0",
-    ach0: false,
-    ach1: false,
-    ach2: false,
-    ach3: false,
-    ach4: false,
-    ach5: false,
-    ach6: false,
-    ach7: false,
-    ach8: false,
-    ach9: false,
-    
-  }
-  let achievements: boolean[] = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ]
 
-  const [balloonInfo, setBalloonInfo] = useState<BalloonProgress>(tempBalloonInfo);
-  const [achievementsList, setAchievements] = useState<boolean[]>(achievements);
+
+
   const auth = useUserContext();
   const axiosContext = useAxiosContext();
   const socket = useSocketContext();
@@ -285,32 +250,6 @@ export const SessionProvider = (props: { children: ReactElement }) => {
       .catch((err: any) => message.error(err));
   };
 
-  const loadPatientBalloonGameData = async( userName: string) => {
-    let newData: BalloonProgress
-    axiosContext.loadPatientBalloonData(userName).then((res:any) =>{
-      console.log(res);
-      newData = {achievementProgress:  res.data.achievementProgress,
-          careerProgress: res.data.careerProgress,
-          levelOneScore: res.data.levelOneScore,
-          levelTwoScore: res.data.levelTwoScore,
-          levelThreeScore: res.data.levelThreeScore,
-          levelFourScore: res.data.levelFourScore,
-          levelFiveScore: res.data.levelFiveScore,
-          ach0: res.data.ach0,
-          ach1: res.data.ach1,
-          ach2: res.data.ach2,
-          ach3: res.data.ach3,
-          ach4: res.data.ach4,
-          ach5: res.data.ach5,
-          ach6: res.data.ach6,
-          ach7: res.data.ach7,
-          ach8: res.data.ach8,
-          ach9: res.data.ach9,}
-      setBalloonInfo(newData);
-      return newData;
-    })
-
-  }
 
 
 
@@ -383,16 +322,12 @@ export const SessionProvider = (props: { children: ReactElement }) => {
         getPatientPositionalData,
         updatePatientInfo,
         getPatient,
-        loadPatientBalloonGameData,
         setCurrentGame,
         getCurrentGame,
         showBalloonSettings,
-        balloonInfo,
         currentScenery,
         setShowBalloonSettings,
         setCurrentScenery,
-        achievementsList,
-        setBalloonInfo,
 
 
       }}

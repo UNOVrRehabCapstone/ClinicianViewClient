@@ -12,15 +12,16 @@ import { useSessionContext } from './SessionContext';
 import { IPatient } from 'renderer/interfaces/Session';
 import { IKRig } from 'renderer/components/PatientCard/Modals/IKRigModal';
 import { BalloonProgress } from 'renderer/interfaces/PatientInfo';
+import AxiosContext, { useAxiosContext } from './AxiosContext';
 
 // Student server
 //const SERVER_IP = 'http://137.48.186.67:5000';
 
 // Local
- //const SERVER_IP = 'http://localhost:5000';
+ const SERVER_IP = 'http://localhost:5000';
 
  // AWS lightsail instance
- const SERVER_IP = 'http://15.157.73.210:5000';
+// const SERVER_IP = 'http://15.157.73.210:5000';
 
 
  export interface IBalloonSettings{
@@ -50,6 +51,31 @@ export class BalloonSettingsStatic{
     modifier: "1.00",
     numBalloonsSpawnedAtOnce: "2",
     timeBetweenSpawns: "2.5"
+  }
+
+}
+
+
+export class StaticBallooonProgress{
+  static balloonInfo: BalloonProgress = {
+    achievementProgress: "0000000000",
+    careerProgress: "0",
+    levelOneScore: "0",
+    levelTwoScore: "0",
+    levelThreeScore: "0",
+    levelFourScore: "0",
+    levelFiveScore: "0",
+    ach0: false,
+    ach1: false,
+    ach2: false,
+    ach3: false,
+    ach4: false,
+    ach5: false,
+    ach6: false,
+    ach7: false,
+    ach8: false,
+    ach9: false,
+    
   }
 
 }
@@ -112,6 +138,8 @@ export interface ISocketContext {
   timeBetweenSpawnsState: string;
   gameIsRunning: boolean;
   setGameIsRunning:(running: boolean) => void;
+  loadPatientBalloonGameData:(userName: string) => void;
+  balloonInfo: BalloonProgress;
 
 }
 
@@ -125,6 +153,7 @@ export const SocketProvider = (props: { children: ReactElement }) => {
   const { children } = props;
   const auth = useUserContext();
   const session = useSessionContext();
+  const axiosContext = useAxiosContext();
   const [connected, setConnected] = useState(true);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [repData, setRepData] = useState<string[]>([]);
@@ -151,23 +180,55 @@ export const SocketProvider = (props: { children: ReactElement }) => {
   const [numOfBalloonsSpawnedAtOnceState, setNumOfBalloonsSpawnedAtOnce] = useState("2");
   const [timeBetweenSpawnsState, setTimeBetweenSpawns] = useState("2.5");
   const [gameIsRunning, setGameIsRunning] = useState(false);
-
+  const sessionContext = useSessionContext();
   const [startGame, setStartGame] = useState(false);
+  const [balloonInfo, setBalloonInfo] = useState(StaticBallooonProgress.balloonInfo)
+
   
+  const loadPatientBalloonGameData = async( userName: string) => {
+    let newData: BalloonProgress
+    let res = await axiosContext.loadPatientBalloonData(userName)
+      console.log("Loading Patient Data:" + userName);
+      console.log(res.data.ach0);
+      console.log(res.data.ach3);
+      newData = {
+          levelOneScore: res.data.levelOneScore,
+          levelTwoScore: res.data.levelTwoScore,
+          levelThreeScore: res.data.levelThreeScore,
+          levelFourScore: res.data.levelFourScore,
+          levelFiveScore: res.data.levelFiveScore,
+          ach0: res.data.ach0,
+          ach1: res.data.ach1,
+          ach2: res.data.ach2,
+          ach3: res.data.ach3,
+          ach4: res.data.ach4,
+          ach5: res.data.ach5,
+          ach6: res.data.ach6,
+          ach7: res.data.ach7,
+          ach8: res.data.ach8,
+          ach9: res.data.ach9,}
+      StaticBallooonProgress.balloonInfo = newData;
+      setBalloonInfo(newData);
+      return newData;
+  }
 
   const handleServerEvents = (newSocket: Socket) => {
     newSocket.on('connect', () => {
       setConnected(true);
       newSocket.emit('join', newSocket.id);
     });
-    newSocket.on('balloonDataClientUpdate', () => {console.log("new updated")})
-    newSocket.on('balloonProgressionUpdate', (data: string) => {
-      console.log("Data");
-      console.log("progress");
-    })
+
+
+    newSocket.on("balloonProgressionUpdate",(payload: string) => {
+      console.log(payload);
+      loadPatientBalloonGameData(payload);
+
+    });
     newSocket.on("clientGameEnded",() =>{
       setGameIsRunning(false);
       console.log("gameEnded");
+
+
     })
     newSocket.on('userJoined', () => {});
     newSocket.on('positionalDataClinician', (data: string) => {
@@ -257,7 +318,6 @@ export const SocketProvider = (props: { children: ReactElement }) => {
   };
   const sendBalloonGameSettings = (patient: IPatient) => {
     //If the game is the balloon game, update balloon settings
-    console.log("SENDING: " + BalloonSettingsStatic.balloonSettings.timeBetweenSpawns)
     let balloonSettings:IBalloonSettings = BalloonSettingsStatic.balloonSettings;
     if(socket){
       socket.emit("balloonSettings",{...patient, balloonSettings})
@@ -366,6 +426,8 @@ export const SocketProvider = (props: { children: ReactElement }) => {
         timeBetweenSpawnsState,
         gameIsRunning,
         setGameIsRunning,
+        loadPatientBalloonGameData,
+        balloonInfo,
       }}
     >
       {children}

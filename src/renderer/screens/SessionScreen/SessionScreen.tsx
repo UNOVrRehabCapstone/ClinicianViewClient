@@ -157,7 +157,9 @@ export const SessionScreen: FC<ISessionScreen> = ({
               icon={<PlayCircleOutlined/>}
               onClick={() =>{
                 if(sessionContext.getCurrentGame() == "2"){
-                  sessionContext.setShowBalloonSettings(true);
+                  if(sessionContext.patientList.length > 0){
+                    sessionContext.setShowBalloonSettings(true);
+                  }
                 }
                 else{
                   sessionContext.setShowBalloonSettings(false);

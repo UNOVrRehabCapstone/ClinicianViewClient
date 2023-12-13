@@ -76,9 +76,9 @@ export const PatientCard: FC<IPatientCard> = ({
 
   const onPatientNameChange = () => {
     console.log(patientName);
+
     if(sessionContext.patientList[0]){
-      sessionContext.patientList[0].name=patientName
-      sessionContext.loadPatientBalloonGameData(sessionContext.patientList[0].name)
+      socketContext.loadPatientBalloonGameData(patientName)
     }
     setShowPatientNameModal(false);
   }
@@ -213,7 +213,7 @@ export const PatientCard: FC<IPatientCard> = ({
         }}
       >
         <Col style={{}}>
-          {patient.name}
+          {patientName}
           <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="Change patient game profile" placement="top">
             <Button
               style={{ margin: '0 2rem' }}
@@ -319,8 +319,14 @@ export const PatientCard: FC<IPatientCard> = ({
             <Button
               icon={<UserDeleteOutlined />}
               danger
-              onClick={() =>
+              onClick={() =>{
                 sessionContext.deletePatientFromSession(patient.name)
+                socketContext.setMode("1");
+                sessionContext.setShowBalloonSettings(false);
+                socketContext.setGameIsRunning(false);
+                
+              }
+
               }
               style={{ marginLeft: 10 }}
             />
