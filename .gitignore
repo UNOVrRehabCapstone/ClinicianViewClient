@@ -30,3 +30,6 @@ npm-debug.log.*
 
 #Visual Studio
 .vs/
+
+#Visual Studio Code
+.vscode/
