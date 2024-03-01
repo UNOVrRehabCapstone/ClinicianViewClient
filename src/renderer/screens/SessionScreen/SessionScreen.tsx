@@ -134,7 +134,7 @@ export const SessionScreen: FC<ISessionScreen> = ({
             defaultValue={"0"}
             onChange={(e) =>{
               sessionContext.setCurrentGame(e)
-              if(e == "0" || e == "2"){
+              if(e == "0" || e == "2" || e == "1" || e == "3"){
                 setShowStartGameButton(true);
               }
               else{
