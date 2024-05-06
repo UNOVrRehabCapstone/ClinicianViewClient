@@ -38,6 +38,23 @@ import AxiosContext, { useAxiosContext } from './AxiosContext';
   timeBetweenSpawns: string;
 }
 
+export interface IPlaneSettings{
+  rightSideSpawnOnly: boolean,
+  leftSideSpawnOnly: boolean,
+  griplessGrabbing: boolean,
+  //Active only when griplessGrabbig is true.  Only one can be selected at a time.
+  useDistanceFromHeadThrow: boolean,
+  useAutoReleaseTimerThrow: boolean,
+  useButtonPressForThrow: boolean,
+  //Active only when griplessGrabbing is true.
+  throwThreshold: number,
+  requiredAimTime: number,
+  useAutoAim: boolean,
+  //Active only when useButtonPressForThrow is true.  Valid strings are "A", "B", "Trigger", "Grip", "Joystick"
+  releaseButton: String,
+  
+}
+
 export class BalloonSettingsStatic{
   static balloonSettings: IBalloonSettings = {
     mode: "1",
@@ -52,9 +69,22 @@ export class BalloonSettingsStatic{
     numBalloonsSpawnedAtOnce: "2",
     timeBetweenSpawns: "2.5"
   }
-
 }
 
+export class PlaneSettingsStatic{
+  static planeSettings: IPlaneSettings = {
+    rightSideSpawnOnly: false,
+    leftSideSpawnOnly: false,
+    griplessGrabbing: false,
+    throwThreshold: 30.0,
+    requiredAimTime: 3.0,
+    useAutoReleaseTimerThrow: false,
+    useAutoAim: false,
+    useButtonPressForThrow: true,
+    releaseButton: "Trigger",
+    useDistanceFromHeadThrow: false
+  }
+}
 
 export class StaticBallooonProgress{
   static balloonInfo: BalloonProgress = {
@@ -314,6 +344,13 @@ export const SocketProvider = (props: { children: ReactElement }) => {
     let balloonSettings:IBalloonSettings = BalloonSettingsStatic.balloonSettings;
     if(socket){
       socket.emit("balloonSettings",{...patient, balloonSettings})
+    }
+  };
+  const sendPlaneGameSetting = (patient: IPatient) => {
+    //If the game is the plane game, update plane settings
+    let planeSettings: IPlaneSettings = PlaneSettingsStatic.planeSettings;
+    if(socket){
+      socket.emit("planeSettings",{...patient, planeSettings})
     }
   };
 
