@@ -31,6 +31,16 @@ export interface ISessionContext {
   getCurrentGame: () => string;
   setCurrentGame: (game: string) => void;
   setShowBalloonSettings:(show: boolean) => void;
+  setShowPlaneSettings:(show: boolean) => void;
+  showPlaneSettings: boolean;
+  setShowAdvancedPlaneSettings:(show: boolean) => void;
+  showAdvancedPlaneSettings: boolean;
+  setShowButtonSettings:(show: boolean) => void;
+  showButtonSettings: boolean;
+  setShowAutoSettings:(show: boolean) => void;
+  showAutoSettings: boolean;
+  setShowDistanceSettings:(show: boolean) => void;
+  showDistanceSettings: boolean;
   currentScenery: string;
   showBalloonSettings: boolean;
   deletePatientFromSession: (patientIn: string) => void;
@@ -66,7 +76,12 @@ export const SessionProvider = (props: { children: ReactElement }) => {
   const [currentScenery, setCurrentScenery] = useState('1');
 
   const [showBalloonSettings, setShowBalloonSettings] = useState(false);
-
+  const [showPlaneSettings, setShowPlaneSettings] = useState(false);
+  const [showAdvancedPlaneSettings, setShowAdvancedPlaneSettings] = useState(false);
+  const [showAimSettings, setShowAimSettings] = useState(false);
+  const [showDistanceSettings, setShowDistanceSettings] = useState(false);
+  const [showAutoSettings, setShowAutoSettings] = useState(false);
+  const [showButtonSettings, setShowButtonSettings] = useState(true);
 
 
 
@@ -325,8 +340,20 @@ export const SessionProvider = (props: { children: ReactElement }) => {
         setCurrentGame,
         getCurrentGame,
         showBalloonSettings,
+        showAdvancedPlaneSettings,
+        setShowAdvancedPlaneSettings,
         currentScenery,
         setShowBalloonSettings,
+        setShowPlaneSettings,
+        showPlaneSettings,
+        setShowAimSettings,
+        showAimSettings,
+        setShowButtonSettings,
+        showButtonSettings,
+        setShowAutoSettings,
+        showAutoSettings,
+        setShowDistanceSettings,
+        showDistanceSettings,
         setCurrentScenery,
 
 

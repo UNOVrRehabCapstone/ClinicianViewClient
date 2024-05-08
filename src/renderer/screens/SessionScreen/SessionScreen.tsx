@@ -12,6 +12,7 @@ import { ISession } from '../../interfaces/Session';
 import PatientCard from '../../components/PatientCard';
 import { useSessionContext } from '../../context/SessionContext';
 import { BalloonSettings } from 'renderer/components/BalloonGame/BalloonGameSettings';
+import { PlaneSettings } from 'renderer/components/PlaneGame/PlaneGameSettings';
 
 const { Option } = Select;
 
@@ -159,6 +160,14 @@ export const SessionScreen: FC<ISessionScreen> = ({
                 if(sessionContext.getCurrentGame() == "2"){
                   if(sessionContext.patientList.length > 0){
                     sessionContext.setShowBalloonSettings(true);
+                    sessionContext.setShowPlaneSettings(false);
+                  }
+                }
+                else if (sessionContext.getCurrentGame() == "3"){
+                  if(sessionContext.patientList.length > 0){
+                    sessionContext.setShowPlaneSettings(true);
+                    sessionContext.setShowBalloonSettings(false);
+                    console.log("Plane Game set");
                   }
                 }
                 else{
@@ -226,6 +235,13 @@ export const SessionScreen: FC<ISessionScreen> = ({
           Balloon Game
         </Divider>
         <BalloonSettings patient={sessionContext.patientList[0]}/>
+        </div>) : (<div></div>)}
+
+      {sessionContext.showPlaneSettings ? (<div>
+        <Divider orientation='center' style={{border:'10px'}}>
+          Plane Game 
+        </Divider>
+        <PlaneSettings patient={sessionContext.patientList[0]}/>
         </div>) : (<div></div>)}
 
 

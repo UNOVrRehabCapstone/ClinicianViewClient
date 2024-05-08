@@ -52,6 +52,7 @@ export interface IPlaneSettings{
   useAutoAim: boolean,
   //Active only when useButtonPressForThrow is true.  Valid strings are "A", "B", "Trigger", "Grip", "Joystick"
   releaseButton: String,
+  targets: number,
   
 }
 
@@ -82,7 +83,8 @@ export class PlaneSettingsStatic{
     useAutoAim: false,
     useButtonPressForThrow: true,
     releaseButton: "Trigger",
-    useDistanceFromHeadThrow: false
+    useDistanceFromHeadThrow: false,
+    targets: 1,
   }
 }
 

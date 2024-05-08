@@ -324,6 +324,7 @@ export const PatientCard: FC<IPatientCard> = ({
                 sessionContext.deletePatientFromSession(patient.name)
                 socketContext.setMode("1");
                 sessionContext.setShowBalloonSettings(false);
+                sessionContext.setShowPlaneSettings(false);
                 socketContext.setGameIsRunning(false);
                 
               }
