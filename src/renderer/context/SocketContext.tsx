@@ -53,7 +53,8 @@ export interface IPlaneSettings{
   //Active only when useButtonPressForThrow is true.  Valid strings are "A", "B", "Trigger", "Grip", "Joystick"
   releaseButton: String,
   targets: number,
-  
+  exactAngleSpawn: boolean,
+  exactAngle: number,
 }
 
 export class BalloonSettingsStatic{
@@ -85,6 +86,8 @@ export class PlaneSettingsStatic{
     releaseButton: "Trigger",
     useDistanceFromHeadThrow: false,
     targets: 1,
+    exactAngleSpawn: false,
+    exactAngle: 90,
   }
 }
 

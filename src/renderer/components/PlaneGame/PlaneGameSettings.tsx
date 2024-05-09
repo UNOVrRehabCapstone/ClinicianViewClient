@@ -46,17 +46,29 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                         if(e=="0"){
                             PlaneSettingsStatic.planeSettings.leftSideSpawnOnly = false;
                             PlaneSettingsStatic.planeSettings.rightSideSpawnOnly = false;
+                            PlaneSettingsStatic.planeSettings.exactAngleSpawn = false;
+                            sessionContext.setShowExactAngle(false);
                             //console.log("All Spawns, Left: " + PlaneSettingsStatic.planeSettings.leftSideSpawnOnly + " Right: " + PlaneSettingsStatic.planeSettings.rightSideSpawnOnly);
                         }
                         if(e=="1"){
                             PlaneSettingsStatic.planeSettings.leftSideSpawnOnly = true;
                             PlaneSettingsStatic.planeSettings.rightSideSpawnOnly = false;
+                            PlaneSettingsStatic.planeSettings.exactAngleSpawn = false;
+                            sessionContext.setShowExactAngle(false);
                             //console.log("Left Spawns, Left: " + PlaneSettingsStatic.planeSettings.leftSideSpawnOnly + " Right: " + PlaneSettingsStatic.planeSettings.rightSideSpawnOnly);
                         }
                         if(e=="2"){
                             PlaneSettingsStatic.planeSettings.leftSideSpawnOnly = false;
                             PlaneSettingsStatic.planeSettings.rightSideSpawnOnly = true;
+                            PlaneSettingsStatic.planeSettings.exactAngleSpawn = false;
+                            sessionContext.setShowExactAngle(false);
                             //console.log("Right Spawns, Left: " + PlaneSettingsStatic.planeSettings.leftSideSpawnOnly + " Right: " + PlaneSettingsStatic.planeSettings.rightSideSpawnOnly);
+                        }
+                        if(e == "3"){
+                            PlaneSettingsStatic.planeSettings.leftSideSpawnOnly = false;
+                            PlaneSettingsStatic.planeSettings.rightSideSpawnOnly = false;
+                            PlaneSettingsStatic.planeSettings.exactAngleSpawn = true;
+                            sessionContext.setShowExactAngle(true);
                         }
                         
                     }}  
@@ -64,8 +76,32 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                         <Option value="0">Any Spawn</Option>
                         <Option value="1">Left Spawns Only</Option>
                         <Option value="2">Right Spawns Only</Option>
+                        <Option value="3">Exact Angle Spawn</Option>
                     </Select>
             </Tooltip>
+        </Col>
+        <Col
+            style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: "280px"
+            }}>
+                {sessionContext.showExactAngle ? ( <div>
+                        <span>Angle: </span>
+                        <Tooltip color={"rgba(14, 118, 254, 1)"} mouseLeaveDelay={0} title="At what angle should the plane be spawned (0 = Far Left, 180 = Far Right)" placement="topLeft">
+                        <InputNumber
+                        style={{ width: 150, marginRight: 10 }}
+                        disabled={socketContext.gameIsRunning}
+                        defaultValue={90}
+                        min={0} // Adjust minimum value if required
+                        onChange={(value) => {
+                            PlaneSettingsStatic.planeSettings.exactAngle = value;
+                        }}
+                    />
+                        </Tooltip>
+                    </div>
+                ) : null}
         </Col>
         <Col
             style={{

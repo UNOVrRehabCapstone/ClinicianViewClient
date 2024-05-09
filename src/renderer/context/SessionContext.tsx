@@ -35,6 +35,8 @@ export interface ISessionContext {
   showPlaneSettings: boolean;
   setShowAdvancedPlaneSettings:(show: boolean) => void;
   showAdvancedPlaneSettings: boolean;
+  setShowExactAngle:(show: boolean) => void;
+  showExactAngle: boolean;
   setShowButtonSettings:(show: boolean) => void;
   showButtonSettings: boolean;
   setShowAutoSettings:(show: boolean) => void;
@@ -82,6 +84,7 @@ export const SessionProvider = (props: { children: ReactElement }) => {
   const [showDistanceSettings, setShowDistanceSettings] = useState(false);
   const [showAutoSettings, setShowAutoSettings] = useState(false);
   const [showButtonSettings, setShowButtonSettings] = useState(true);
+  const [showExactAngle, setShowExactAngle] = useState(false);
 
 
 
@@ -342,6 +345,8 @@ export const SessionProvider = (props: { children: ReactElement }) => {
         showBalloonSettings,
         showAdvancedPlaneSettings,
         setShowAdvancedPlaneSettings,
+        setShowExactAngle,
+        showExactAngle,
         currentScenery,
         setShowBalloonSettings,
         setShowPlaneSettings,
