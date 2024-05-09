@@ -347,14 +347,15 @@ export const SocketProvider = (props: { children: ReactElement }) => {
     let balloonSettings:IBalloonSettings = BalloonSettingsStatic.balloonSettings;
     if(socket){
       socket.emit("balloonSettings",{...patient, balloonSettings});
+      
     }
   };
+  
   const sendPlaneGameSettings = (patient: IPatient) => {
     //If the game is the plane game, update plane settings
-    let planeSettings: IPlaneSettings = PlaneSettingsStatic.planeSettings;
+    let planeSettings:IPlaneSettings = PlaneSettingsStatic.planeSettings;
     if(socket){
       socket.emit("planeSettings",{...patient, planeSettings});
-      console.log(planeSettings);
     }
   };
 

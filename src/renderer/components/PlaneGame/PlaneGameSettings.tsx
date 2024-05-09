@@ -281,7 +281,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
             </div>) : null}
             {sessionContext.showDistanceSettings ? (<div>
                 <span>Distance: </span>
-                <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="How far of an extention to throw the plane? (In cm)" placement="bottomLeft">
+                <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="How far of an extention to throw the plane? (In cm)" placement="topLeft">
                     <Select
                         style={{ width: 150, marginRight: 10}}
                         disabled={socketContext.gameIsRunning}
@@ -341,7 +341,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
             </div>) : null}
             {sessionContext.showAutoSettings ? (<div>
                 <span>Time: </span>
-                <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="How long does the patient need to hold aim?" placement="bottomLeft">
+                <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="How long does the patient need to hold aim?" placement="topLeft">
                     <Select
                     style={{ width: 150, marginRight: 10}}
                     disabled={socketContext.gameIsRunning}
@@ -412,6 +412,21 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                         socketContext.sendPlaneGameSettings(patient);
                         socketContext.setGameIsRunning(true);
                     }}>Begin Game</Button>
+                </Tooltip>
+                </Col>
+            ) : null}
+            {socketContext.gameIsRunning ? (
+                <Col style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: "280px",
+                }}>
+                <Tooltip color={"rgba(14,118,254,1)"} title="End the current game" placement="topLeft">
+                    <Button style={{width:"280px"}} type="primary" onClick={() =>{
+                        socketContext.setGameIsRunning(false);
+                        sessionContext.startGame(sessionContext.currentSession?.sessionKey);
+                    }}>Stop Game</Button>
                 </Tooltip>
                 </Col>
             ) : null}
