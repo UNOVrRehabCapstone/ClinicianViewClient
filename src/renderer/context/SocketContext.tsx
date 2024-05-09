@@ -55,6 +55,11 @@ export interface IPlaneSettings{
   targets: number,
   exactAngleSpawn: boolean,
   exactAngle: number,
+  useTargetZones: boolean,
+  numRTargets: number,
+  numLTargets: number,
+  numCTargets: number,
+  numFTargets: number,
 }
 
 export class BalloonSettingsStatic{
@@ -88,6 +93,11 @@ export class PlaneSettingsStatic{
     targets: 1,
     exactAngleSpawn: false,
     exactAngle: 90,
+    useTargetZones: false,
+    numLTargets: 0,
+    numRTargets: 0,
+    numCTargets: 0,
+    numFTargets: 0,
   }
 }
 
