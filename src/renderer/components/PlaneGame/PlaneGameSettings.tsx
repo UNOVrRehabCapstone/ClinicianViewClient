@@ -72,7 +72,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                 width: "280px"
             }}>
             <span>Targets Spawned: </span>
-            <Tooltip color={"rgba(14, 118, 254, 1)"} mouseLeaveDelay={0} title="How many targets should be spanwed?" placement="bottomLeft">
+            <Tooltip color={"rgba(14, 118, 254, 1)"} mouseLeaveDelay={0} title="How many targets should be spanwed?" placement="topLeft">
                 <Select
                     style={{ width: 150, marginRight: 10}}
                     defaultValue="1"

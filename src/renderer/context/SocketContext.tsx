@@ -350,7 +350,7 @@ export const SocketProvider = (props: { children: ReactElement }) => {
       
     }
   };
-  
+
   const sendPlaneGameSettings = (patient: IPatient) => {
     //If the game is the plane game, update plane settings
     let planeSettings:IPlaneSettings = PlaneSettingsStatic.planeSettings;
