@@ -5,6 +5,9 @@ import { useSessionContext } from "renderer/context/SessionContext";
 import { PlaneSettingsStatic, useSocketContext } from "renderer/context/SocketContext";
 import { IPatient } from "renderer/interfaces/Session";
 import { debuglog } from "util";
+// Import the InputNumber component from Ant Design
+import { InputNumber, Tooltip } from 'antd';
+
 
 const { Option } = Select;
 
@@ -279,66 +282,22 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                     </Select>
                 </Tooltip>
             </div>) : null}
-            {sessionContext.showDistanceSettings ? (<div>
-                <span>Distance: </span>
-                <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="How far of an extention to throw the plane? (In cm)" placement="topLeft">
-                    <Select
-                        style={{ width: 150, marginRight: 10}}
+            {sessionContext.showDistanceSettings ? (
+            <div>
+                <span>Distance (cm): </span>
+                <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="How far of an extension to throw the plane? (In cm)" placement="topLeft">
+                    <InputNumber
+                        style={{ width: 150, marginRight: 10 }}
                         disabled={socketContext.gameIsRunning}
-                        defaultValue="35"
-                        onChange={(e) => {
-                            if(e == "5"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 5;
-                            }
-                            if(e == "10"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 10;
-                            }
-                            if(e == "15"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 15;
-                            }
-                            if(e == "20"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 20;
-                            }
-                            if(e == "25"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 25;
-                            }
-                            if(e == "30"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 30;
-                            }
-                            if(e == "35"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 35;
-                            }
-                            if(e == "40"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 40;
-                            }
-                            if(e == "45"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 45;
-                            }
-                            if(e == "50"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 50;
-                            }
-                            if(e == "55"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 55;
-                            }
-                            if(e == "60"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 60;
-                            }
-                        }}>
-                        <Option value="5">5 cm</Option>
-                        <Option value="10">10 cm</Option>
-                        <Option value="15">15 cm</Option>
-                        <Option value="20">20 cm</Option>
-                        <Option value="25">25 cm</Option>
-                        <Option value="30">30 cm</Option>
-                        <Option value="35">35 cm</Option>
-                        <Option value="40">40 cm</Option>
-                        <Option value="45">45 cm</Option>
-                        <Option value="50">50 cm</Option>
-                        <Option value="55">55 cm</Option>
-                        <Option value="60">60 cm</Option>
-                    </Select>
+                        defaultValue={35}
+                        min={0} // Adjust minimum value if required
+                        onChange={(value) => {
+                            PlaneSettingsStatic.planeSettings.throwThreshold = value;
+                        }}
+                    />
                 </Tooltip>
-            </div>) : null}
+            </div>
+        ) : null}
             {sessionContext.showAutoSettings ? (<div>
                 <span>Time: </span>
                 <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="How long does the patient need to hold aim?" placement="topLeft">
