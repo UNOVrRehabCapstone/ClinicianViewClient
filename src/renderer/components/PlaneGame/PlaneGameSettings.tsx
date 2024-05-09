@@ -393,6 +393,29 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
             </div>) : null}
         </Col>
     </Row>
+    <Row
+        style={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            padding: '10px',
+        }}>
+            {!socketContext.gameIsRunning ? (
+                <Col style={{
+                    display: 'flex', 
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: "280px",
+                }}>
+                <Tooltip color={"rgba(14,118,254,1)"} title="Begin a game with the current settings." mouseLeaveDelay={0}>
+                    <Button style={{width:"280px"}} type="primary" onClick={() =>{
+                        sessionContext.startGame(sessionContext.currentSession?.sessionKey)
+                        socketContext.sendPlaneGameSettings(patient);
+                        socketContext.setGameIsRunning(true);
+                    }}>Begin Game</Button>
+                </Tooltip>
+                </Col>
+            ) : null}
+        </Row>
         </div>
     )
 }

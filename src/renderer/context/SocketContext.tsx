@@ -138,6 +138,7 @@ export interface ISocketContext {
 
   manuallySpawnBalloon: (patient: IPatient) => void;
   sendBalloonGameSettings: (patient: IPatient) => void;
+  sendPlaneGameSettings: (patient: IPatient) => void;
   moveDart:(patient: IPatient, isUp: boolean) => void;
   setStartGame:(start: boolean) => void;
   setShowBalloonSpawner:(show: boolean) => void;
@@ -345,14 +346,15 @@ export const SocketProvider = (props: { children: ReactElement }) => {
     //If the game is the balloon game, update balloon settings
     let balloonSettings:IBalloonSettings = BalloonSettingsStatic.balloonSettings;
     if(socket){
-      socket.emit("balloonSettings",{...patient, balloonSettings})
+      socket.emit("balloonSettings",{...patient, balloonSettings});
     }
   };
-  const sendPlaneGameSetting = (patient: IPatient) => {
+  const sendPlaneGameSettings = (patient: IPatient) => {
     //If the game is the plane game, update plane settings
     let planeSettings: IPlaneSettings = PlaneSettingsStatic.planeSettings;
     if(socket){
-      socket.emit("planeSettings",{...patient, planeSettings})
+      socket.emit("planeSettings",{...patient, planeSettings});
+      console.log(planeSettings);
     }
   };
 
@@ -427,6 +429,7 @@ export const SocketProvider = (props: { children: ReactElement }) => {
         testSocket,
         manuallySpawnBalloon,
         sendBalloonGameSettings,
+        sendPlaneGameSettings,
         setStartGame,
         moveDart,
         setShowBalloonSpawner,

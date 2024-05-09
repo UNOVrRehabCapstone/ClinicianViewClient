@@ -346,8 +346,6 @@ export const SessionProvider = (props: { children: ReactElement }) => {
         setShowBalloonSettings,
         setShowPlaneSettings,
         showPlaneSettings,
-        setShowAimSettings,
-        showAimSettings,
         setShowButtonSettings,
         showButtonSettings,
         setShowAutoSettings,
