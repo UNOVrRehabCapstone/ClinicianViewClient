@@ -328,7 +328,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                 </Tooltip>
             </div>
         ) : null}
-            {sessionContext.showAutoSettings ? (<div>
+            {sessionContext.showAutoSettings || sessionContext.showAdvancedPlaneSettings ? (<div>
                 <span>Time: </span>
                 <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="How long does the patient need to hold aim?" placement="topLeft">
                     <Select
