@@ -112,53 +112,15 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
             }}>
             <span>Targets Spawned: </span>
             <Tooltip color={"rgba(14, 118, 254, 1)"} mouseLeaveDelay={0} title="How many targets should be spanwed?" placement="topLeft">
-                <Select
-                    style={{ width: 150, marginRight: 10}}
-                    defaultValue="1"
-                    disabled={socketContext.gameIsRunning}
-                    onChange={(e) =>{
-                        if(e == "1"){
-                            PlaneSettingsStatic.planeSettings.targets = 1;
-                        }
-                        if(e == "2"){
-                            PlaneSettingsStatic.planeSettings.targets = 2;
-                        }
-                        if(e == "3"){
-                            PlaneSettingsStatic.planeSettings.targets = 3;
-                        }
-                        if(e == "4"){
-                            PlaneSettingsStatic.planeSettings.targets = 4;
-                        }
-                        if(e == "5"){
-                            PlaneSettingsStatic.planeSettings.targets = 5;
-                        }
-                        if(e == "6"){
-                            PlaneSettingsStatic.planeSettings.targets = 6;
-                        }
-                        if(e == "7"){
-                            PlaneSettingsStatic.planeSettings.targets = 7;
-                        }
-                        if(e == "8"){
-                            PlaneSettingsStatic.planeSettings.targets = 8;
-                        }
-                        if(e == "9"){
-                            PlaneSettingsStatic.planeSettings.targets = 9;
-                        }
-                        if(e == "10"){
-                            PlaneSettingsStatic.planeSettings.targets = 10;
-                        }
-                    }}>
-                        <Option value="1">1</Option>
-                        <Option value="2">2</Option>
-                        <Option value="3">3</Option>
-                        <Option value="4">4</Option>
-                        <Option value="5">5</Option>
-                        <Option value="6">6</Option>
-                        <Option value="7">7</Option>
-                        <Option value="8">8</Option>
-                        <Option value="9">9</Option>
-                        <Option value="10">10</Option>
-                </Select>
+            <InputNumber
+                        style={{ width: 150, marginRight: 10 }}
+                        disabled={socketContext.gameIsRunning}
+                        defaultValue={1}
+                        min={0} // Adjust minimum value if required
+                        onChange={(value) => {
+                            PlaneSettingsStatic.planeSettings.targets = value;
+                        }}
+                    />
             </Tooltip>
         </Col>
         {sessionContext.showHitZones ? (
@@ -329,7 +291,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
             alignItems: 'center',
             width: "280px"
         }}>
-                <span>Far Targets: </span>
+                <span>Left Targets: </span>
                 <Tooltip color={"rgba(14, 118, 254, 1)"} mouseLeaveDelay={0} title="Targets to spawn far from the user." placement="topLeft">
                 <InputNumber
                         style={{ width: 150, marginRight: 10 }}
