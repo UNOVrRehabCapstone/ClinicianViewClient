@@ -5,6 +5,9 @@ import { useSessionContext } from "renderer/context/SessionContext";
 import { PlaneSettingsStatic, useSocketContext } from "renderer/context/SocketContext";
 import { IPatient } from "renderer/interfaces/Session";
 import { debuglog } from "util";
+// Import the InputNumber component from Ant Design
+import { InputNumber, Tooltip } from 'antd';
+
 
 const { Option } = Select;
 
@@ -43,17 +46,29 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                         if(e=="0"){
                             PlaneSettingsStatic.planeSettings.leftSideSpawnOnly = false;
                             PlaneSettingsStatic.planeSettings.rightSideSpawnOnly = false;
+                            PlaneSettingsStatic.planeSettings.exactAngleSpawn = false;
+                            sessionContext.setShowExactAngle(false);
                             //console.log("All Spawns, Left: " + PlaneSettingsStatic.planeSettings.leftSideSpawnOnly + " Right: " + PlaneSettingsStatic.planeSettings.rightSideSpawnOnly);
                         }
                         if(e=="1"){
                             PlaneSettingsStatic.planeSettings.leftSideSpawnOnly = true;
                             PlaneSettingsStatic.planeSettings.rightSideSpawnOnly = false;
+                            PlaneSettingsStatic.planeSettings.exactAngleSpawn = false;
+                            sessionContext.setShowExactAngle(false);
                             //console.log("Left Spawns, Left: " + PlaneSettingsStatic.planeSettings.leftSideSpawnOnly + " Right: " + PlaneSettingsStatic.planeSettings.rightSideSpawnOnly);
                         }
                         if(e=="2"){
                             PlaneSettingsStatic.planeSettings.leftSideSpawnOnly = false;
                             PlaneSettingsStatic.planeSettings.rightSideSpawnOnly = true;
+                            PlaneSettingsStatic.planeSettings.exactAngleSpawn = false;
+                            sessionContext.setShowExactAngle(false);
                             //console.log("Right Spawns, Left: " + PlaneSettingsStatic.planeSettings.leftSideSpawnOnly + " Right: " + PlaneSettingsStatic.planeSettings.rightSideSpawnOnly);
+                        }
+                        if(e == "3"){
+                            PlaneSettingsStatic.planeSettings.leftSideSpawnOnly = false;
+                            PlaneSettingsStatic.planeSettings.rightSideSpawnOnly = false;
+                            PlaneSettingsStatic.planeSettings.exactAngleSpawn = true;
+                            sessionContext.setShowExactAngle(true);
                         }
                         
                     }}  
@@ -61,6 +76,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                         <Option value="0">Any Spawn</Option>
                         <Option value="1">Left Spawns Only</Option>
                         <Option value="2">Right Spawns Only</Option>
+                        <Option value="3">Exact Angle Spawn</Option>
                     </Select>
             </Tooltip>
         </Col>
@@ -71,57 +87,42 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                 alignItems: 'center',
                 width: "280px"
             }}>
-            <span>Targets Spawned: </span>
-            <Tooltip color={"rgba(14, 118, 254, 1)"} mouseLeaveDelay={0} title="How many targets should be spanwed?" placement="bottomLeft">
-                <Select
-                    style={{ width: 150, marginRight: 10}}
-                    defaultValue="1"
-                    disabled={socketContext.gameIsRunning}
-                    onChange={(e) =>{
-                        if(e == "1"){
-                            PlaneSettingsStatic.planeSettings.targets = 1;
-                        }
-                        if(e == "2"){
-                            PlaneSettingsStatic.planeSettings.targets = 2;
-                        }
-                        if(e == "3"){
-                            PlaneSettingsStatic.planeSettings.targets = 3;
-                        }
-                        if(e == "4"){
-                            PlaneSettingsStatic.planeSettings.targets = 4;
-                        }
-                        if(e == "5"){
-                            PlaneSettingsStatic.planeSettings.targets = 5;
-                        }
-                        if(e == "6"){
-                            PlaneSettingsStatic.planeSettings.targets = 6;
-                        }
-                        if(e == "7"){
-                            PlaneSettingsStatic.planeSettings.targets = 7;
-                        }
-                        if(e == "8"){
-                            PlaneSettingsStatic.planeSettings.targets = 8;
-                        }
-                        if(e == "9"){
-                            PlaneSettingsStatic.planeSettings.targets = 9;
-                        }
-                        if(e == "10"){
-                            PlaneSettingsStatic.planeSettings.targets = 10;
-                        }
-                    }}>
-                        <Option value="1">1</Option>
-                        <Option value="2">2</Option>
-                        <Option value="3">3</Option>
-                        <Option value="4">4</Option>
-                        <Option value="5">5</Option>
-                        <Option value="6">6</Option>
-                        <Option value="7">7</Option>
-                        <Option value="8">8</Option>
-                        <Option value="9">9</Option>
-                        <Option value="10">10</Option>
-                </Select>
+                {sessionContext.showExactAngle ? ( <div>
+                        <span>Angle: </span>
+                        <Tooltip color={"rgba(14, 118, 254, 1)"} mouseLeaveDelay={0} title="At what angle should the plane be spawned (0 = Far Left, 180 = Far Right)" placement="topLeft">
+                        <InputNumber
+                        style={{ width: 150, marginRight: 10 }}
+                        disabled={socketContext.gameIsRunning}
+                        defaultValue={90}
+                        min={0} // Adjust minimum value if required
+                        onChange={(value) => {
+                            PlaneSettingsStatic.planeSettings.exactAngle = Math.floor(+value!);
+                        }}
+                    />
+                        </Tooltip>
+                    </div>
+                ) : null}
+        </Col>
+        <Col
+            style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: "280px"
+            }}>
+            <span>Random Targets Spawned: </span>
+            <Tooltip color={"rgba(14, 118, 254, 1)"} mouseLeaveDelay={0} title="How many targets should be spanwed?" placement="topLeft">
+            <InputNumber
+                        style={{ width: 150, marginRight: 10 }}
+                        disabled={socketContext.gameIsRunning}
+                        defaultValue={1}
+                        min={0} // Adjust minimum value if required
+                        onChange={(value) => {
+                            PlaneSettingsStatic.planeSettings.targets = Math.floor(+value!);
+                        }}
+                    />
             </Tooltip>
-        </Col>        
+        </Col>             
     </Row>
     <Row
         style={{
@@ -129,7 +130,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
             justifyContent: 'flex-start',
             padding: '10px',
         }}>
-    <Col
+        <Col
             style={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -186,6 +187,38 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                         </Select>
                 </Tooltip>
             </div>) : <div></div>}
+        </Col>
+        <Col
+            style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+        }}>
+            <span>Use Target Spawn Zones?: </span>
+            <Tooltip color={"rgba(14, 118, 254, 1)"} mouseLeaveDelay={0} title="Fine tune where targets spawn." placement="topLeft">
+                <Select
+                    style={{ width: 150, marginRight: 10}}
+                    disabled={socketContext.gameIsRunning}
+                    defaultValue="0"
+                    onChange={(e) =>{
+                        if(e == "0"){
+                            PlaneSettingsStatic.planeSettings.useTargetZones = false;
+                            sessionContext.setShowHitZones(false);
+                            PlaneSettingsStatic.planeSettings.numCTargets = 0;
+                            PlaneSettingsStatic.planeSettings.numFTargets = 0;
+                            PlaneSettingsStatic.planeSettings.numLTargets = 0;
+                            PlaneSettingsStatic.planeSettings.numRTargets = 0;
+                        }
+                        if(e == "1"){
+                            PlaneSettingsStatic.planeSettings.useTargetZones = true;
+                            sessionContext.setShowHitZones(true);
+                        }
+                    }}>
+                        <Option value="0">No</Option>
+                        <Option value="1">Yes</Option>
+                    </Select>
+            </Tooltip>
         </Col>
     </Row>
     <Row
@@ -279,69 +312,25 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                     </Select>
                 </Tooltip>
             </div>) : null}
-            {sessionContext.showDistanceSettings ? (<div>
-                <span>Distance: </span>
-                <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="How far of an extention to throw the plane? (In cm)" placement="bottomLeft">
-                    <Select
-                        style={{ width: 150, marginRight: 10}}
+            {sessionContext.showDistanceSettings ? (
+            <div>
+                <span>Distance (cm): </span>
+                <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="How far of an extension to throw the plane? (In cm)" placement="topLeft">
+                    <InputNumber
+                        style={{ width: 150, marginRight: 10 }}
                         disabled={socketContext.gameIsRunning}
-                        defaultValue="35"
-                        onChange={(e) => {
-                            if(e == "5"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 5;
-                            }
-                            if(e == "10"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 10;
-                            }
-                            if(e == "15"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 15;
-                            }
-                            if(e == "20"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 20;
-                            }
-                            if(e == "25"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 25;
-                            }
-                            if(e == "30"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 30;
-                            }
-                            if(e == "35"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 35;
-                            }
-                            if(e == "40"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 40;
-                            }
-                            if(e == "45"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 45;
-                            }
-                            if(e == "50"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 50;
-                            }
-                            if(e == "55"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 55;
-                            }
-                            if(e == "60"){
-                                PlaneSettingsStatic.planeSettings.throwThreshold = 60;
-                            }
-                        }}>
-                        <Option value="5">5 cm</Option>
-                        <Option value="10">10 cm</Option>
-                        <Option value="15">15 cm</Option>
-                        <Option value="20">20 cm</Option>
-                        <Option value="25">25 cm</Option>
-                        <Option value="30">30 cm</Option>
-                        <Option value="35">35 cm</Option>
-                        <Option value="40">40 cm</Option>
-                        <Option value="45">45 cm</Option>
-                        <Option value="50">50 cm</Option>
-                        <Option value="55">55 cm</Option>
-                        <Option value="60">60 cm</Option>
-                    </Select>
+                        defaultValue={35}
+                        min={0} // Adjust minimum value if required
+                        onChange={(value) => {
+                            PlaneSettingsStatic.planeSettings.throwThreshold = value;
+                        }}
+                    />
                 </Tooltip>
-            </div>) : null}
-            {sessionContext.showAutoSettings ? (<div>
+            </div>
+        ) : null}
+            {sessionContext.showAutoSettings || sessionContext.showAdvancedPlaneSettings ? (<div>
                 <span>Time: </span>
-                <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="How long does the patient need to hold aim?" placement="bottomLeft">
+                <Tooltip color={"rgba(14,118,254,1)"} mouseLeaveDelay={0} title="How long does the patient need to hold aim?" placement="topLeft">
                     <Select
                     style={{ width: 150, marginRight: 10}}
                     disabled={socketContext.gameIsRunning}
@@ -394,12 +383,102 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
         </Col>
     </Row>
     <Row
-        style={{
+    style={{
+        display: 'flex',
+        justifyContent: 'flex-start',
+        padding: '10px',
+    }}>
+        {sessionContext.showHitZones ? (
+            <Col
+            style={{
             display: 'flex',
-            justifyContent: 'flex-start',
-            padding: '10px',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
         }}>
-            {!socketContext.gameIsRunning ? (
+                <span>Left Targets: </span>
+                <Tooltip color={"rgba(14, 118, 254, 1)"} mouseLeaveDelay={0} title="Targets to spawn on the left." placement="topLeft">
+                <InputNumber
+                        style={{ width: 150, marginRight: 10 }}
+                        disabled={socketContext.gameIsRunning}
+                        defaultValue={0}
+                        min={0} // Adjust minimum value if required
+                        onChange={(value) => {
+                            PlaneSettingsStatic.planeSettings.numLTargets = Math.floor(+value!);
+                        }}
+                    />
+                </Tooltip>
+            </Col>   
+        ) : null}
+        {sessionContext.showHitZones ? (
+            <Col
+            style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+        }}>
+                <span>Right Targets: </span>
+                <Tooltip color={"rgba(14, 118, 254, 1)"} mouseLeaveDelay={0} title="Targets to spawn on the right." placement="topLeft">
+                <InputNumber
+                        style={{ width: 150, marginRight: 10 }}
+                        disabled={socketContext.gameIsRunning}
+                        defaultValue={0}
+                        min={0} // Adjust minimum value if required
+                        onChange={(value) => {
+                            PlaneSettingsStatic.planeSettings.numRTargets = Math.floor(+value!);
+                        }}
+                    />
+                </Tooltip>
+            </Col>   
+        ) : null}
+        {sessionContext.showHitZones ? (
+            <Col
+            style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+        }}>
+                <span>Close Targets: </span>
+                <Tooltip color={"rgba(14, 118, 254, 1)"} mouseLeaveDelay={0} title="Targets to spawn close to the user." placement="topLeft">
+                <InputNumber
+                        style={{ width: 150, marginRight: 10 }}
+                        disabled={socketContext.gameIsRunning}
+                        defaultValue={0}
+                        min={0} // Adjust minimum value if required
+                        onChange={(value) => {
+                            PlaneSettingsStatic.planeSettings.numCTargets = Math.floor(+value!);
+                        }}
+                    />
+                </Tooltip>
+            </Col>   
+        ) : null}
+        {sessionContext.showHitZones ? (
+            <Col
+            style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: "280px"
+        }}>
+                <span>Far Targets: </span>
+                <Tooltip color={"rgba(14, 118, 254, 1)"} mouseLeaveDelay={0} title="Targets to spawn far from the user." placement="topLeft">
+                <InputNumber
+                        style={{ width: 150, marginRight: 10 }}
+                        disabled={socketContext.gameIsRunning}
+                        defaultValue={0}
+                        min={0} // Adjust minimum value if required
+                        onChange={(value) => {
+                            PlaneSettingsStatic.planeSettings.numFTargets = Math.floor(+value!);
+                        }}
+                    />
+                </Tooltip>
+            </Col>   
+        ) : null}
+    </Row>
+    <Row>
+        {!socketContext.gameIsRunning ? (
                 <Col style={{
                     display: 'flex', 
                     justifyContent: 'space-between',
@@ -412,6 +491,21 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                         socketContext.sendPlaneGameSettings(patient);
                         socketContext.setGameIsRunning(true);
                     }}>Begin Game</Button>
+                </Tooltip>
+                </Col>
+            ) : null}
+            {socketContext.gameIsRunning ? (
+                <Col style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: "280px",
+                }}>
+                <Tooltip color={"rgba(14,118,254,1)"} title="End the current game" placement="topLeft">
+                    <Button style={{width:"280px"}} type="primary" onClick={() =>{
+                        socketContext.setGameIsRunning(false);
+                        sessionContext.startGame(sessionContext.currentSession?.sessionKey);
+                    }}>Stop Game</Button>
                 </Tooltip>
                 </Col>
             ) : null}

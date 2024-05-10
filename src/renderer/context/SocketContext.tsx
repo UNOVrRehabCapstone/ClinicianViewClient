@@ -53,7 +53,13 @@ export interface IPlaneSettings{
   //Active only when useButtonPressForThrow is true.  Valid strings are "A", "B", "Trigger", "Grip", "Joystick"
   releaseButton: String,
   targets: number,
-  
+  exactAngleSpawn: boolean,
+  exactAngle: number,
+  useTargetZones: boolean,
+  numRTargets: number,
+  numLTargets: number,
+  numCTargets: number,
+  numFTargets: number,
 }
 
 export class BalloonSettingsStatic{
@@ -85,6 +91,13 @@ export class PlaneSettingsStatic{
     releaseButton: "Trigger",
     useDistanceFromHeadThrow: false,
     targets: 1,
+    exactAngleSpawn: false,
+    exactAngle: 90,
+    useTargetZones: false,
+    numLTargets: 0,
+    numRTargets: 0,
+    numCTargets: 0,
+    numFTargets: 0,
   }
 }
 
@@ -347,14 +360,15 @@ export const SocketProvider = (props: { children: ReactElement }) => {
     let balloonSettings:IBalloonSettings = BalloonSettingsStatic.balloonSettings;
     if(socket){
       socket.emit("balloonSettings",{...patient, balloonSettings});
+      
     }
   };
+
   const sendPlaneGameSettings = (patient: IPatient) => {
     //If the game is the plane game, update plane settings
-    let planeSettings: IPlaneSettings = PlaneSettingsStatic.planeSettings;
+    let planeSettings:IPlaneSettings = PlaneSettingsStatic.planeSettings;
     if(socket){
       socket.emit("planeSettings",{...patient, planeSettings});
-      console.log(planeSettings);
     }
   };
 

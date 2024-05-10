@@ -146,9 +146,9 @@ export const SessionScreen: FC<ISessionScreen> = ({
           >
             <Option value="0">Initialize</Option>
             <Option value="2">Balloons</Option>
-            <Option value="1">Box and Blocks (Old)</Option>
+            {/* <Option value="1">Box and Blocks (Old)</Option> */}
             {/* FIXME: Add the other games here */}
-            <Option value="3">Planes (Old)</Option>
+            <Option value="3">Planes</Option>
           </Select>
           {showStartGameButton ? (          
           <Tooltip color={"rgba(64,168,254,1)"} mouseLeaveDelay={0} title="Change the currently loaded game for the patient" placement="bottomLeft">
