@@ -136,7 +136,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                 <InputNumber
                         style={{ width: 150, marginRight: 10 }}
                         disabled={socketContext.gameIsRunning}
-                        defaultValue={1}
+                        defaultValue={0}
                         min={0} // Adjust minimum value if required
                         onChange={(value) => {
                             PlaneSettingsStatic.planeSettings.numLTargets = value;
@@ -158,7 +158,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                 <InputNumber
                         style={{ width: 150, marginRight: 10 }}
                         disabled={socketContext.gameIsRunning}
-                        defaultValue={1}
+                        defaultValue={0}
                         min={0} // Adjust minimum value if required
                         onChange={(value) => {
                             PlaneSettingsStatic.planeSettings.numRTargets = value;
@@ -274,7 +274,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                 <InputNumber
                         style={{ width: 150, marginRight: 10 }}
                         disabled={socketContext.gameIsRunning}
-                        defaultValue={1}
+                        defaultValue={0}
                         min={0} // Adjust minimum value if required
                         onChange={(value) => {
                             PlaneSettingsStatic.planeSettings.numCTargets = value;
@@ -296,7 +296,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                 <InputNumber
                         style={{ width: 150, marginRight: 10 }}
                         disabled={socketContext.gameIsRunning}
-                        defaultValue={1}
+                        defaultValue={0}
                         min={0} // Adjust minimum value if required
                         onChange={(value) => {
                             PlaneSettingsStatic.planeSettings.numFTargets = value;
