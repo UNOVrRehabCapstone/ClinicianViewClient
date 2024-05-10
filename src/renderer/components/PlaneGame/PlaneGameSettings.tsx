@@ -96,7 +96,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                         defaultValue={90}
                         min={0} // Adjust minimum value if required
                         onChange={(value) => {
-                            PlaneSettingsStatic.planeSettings.exactAngle = value;
+                            PlaneSettingsStatic.planeSettings.exactAngle = Math.floor(+value!);
                         }}
                     />
                         </Tooltip>
@@ -118,7 +118,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                         defaultValue={1}
                         min={0} // Adjust minimum value if required
                         onChange={(value) => {
-                            PlaneSettingsStatic.planeSettings.targets = value;
+                            PlaneSettingsStatic.planeSettings.targets = Math.floor(+value!);
                         }}
                     />
             </Tooltip>
@@ -404,7 +404,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                         defaultValue={0}
                         min={0} // Adjust minimum value if required
                         onChange={(value) => {
-                            PlaneSettingsStatic.planeSettings.numLTargets = value;
+                            PlaneSettingsStatic.planeSettings.numLTargets = Math.floor(+value!);
                         }}
                     />
                 </Tooltip>
@@ -426,7 +426,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                         defaultValue={0}
                         min={0} // Adjust minimum value if required
                         onChange={(value) => {
-                            PlaneSettingsStatic.planeSettings.numRTargets = value;
+                            PlaneSettingsStatic.planeSettings.numRTargets = Math.floor(+value!);
                         }}
                     />
                 </Tooltip>
@@ -448,7 +448,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                         defaultValue={0}
                         min={0} // Adjust minimum value if required
                         onChange={(value) => {
-                            PlaneSettingsStatic.planeSettings.numCTargets = value;
+                            PlaneSettingsStatic.planeSettings.numCTargets = Math.floor(+value!);
                         }}
                     />
                 </Tooltip>
@@ -470,7 +470,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                         defaultValue={0}
                         min={0} // Adjust minimum value if required
                         onChange={(value) => {
-                            PlaneSettingsStatic.planeSettings.numFTargets = value;
+                            PlaneSettingsStatic.planeSettings.numFTargets = Math.floor(+value!);
                         }}
                     />
                 </Tooltip>
