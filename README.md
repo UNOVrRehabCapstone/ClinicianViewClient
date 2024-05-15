@@ -134,6 +134,15 @@ Handles current logged in user
 
 # Release Notes:
 
+### 5/15/24
+Added in functionality for Plane Game.
+Functions Added for Plane Game:
+- Spawn Angles (Left, Right, Random, Exact)
+- Gripless Grabbing
+- Auto Aim
+- Throwing Mechanisims (Button Press, Distance From Head, Aim Time)
+- Target Spawn Zones
+
 ### 2/29/24
 Connected into new student server
 
