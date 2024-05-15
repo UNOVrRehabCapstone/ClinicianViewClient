@@ -148,6 +148,7 @@ export const PlaneSettings: FC<IPlaneGameSettings> = ({
                         if(e=="0"){
                             PlaneSettingsStatic.planeSettings.griplessGrabbing = false;
                             sessionContext.setShowAdvancedPlaneSettings(false);
+                            PlaneSettingsStatic.planeSettings.useAutoAim = false;
                             //console.log("Advanced: " + sessionContext.showAdvancedPlaneSettings);
                         }
                         if(e=="1"){
