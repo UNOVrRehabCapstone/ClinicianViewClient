@@ -15,10 +15,10 @@ import { BalloonProgress } from 'renderer/interfaces/PatientInfo';
 import AxiosContext, { useAxiosContext } from './AxiosContext';
 
 // Student server
-//const SERVER_IP = 'http://137.48.186.67:5000';
+const SERVER_IP = 'http://18.117.15.202:5000';
 
 // Local
- const SERVER_IP = 'http://localhost:5000';
+// const SERVER_IP = 'http://localhost:5000';
 
  // AWS lightsail instance
 //  const SERVER_IP = 'http://15.157.73.210:5000';
